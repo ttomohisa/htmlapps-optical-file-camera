@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f5f5f2">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Optical File</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231c6b5a'/%3E%3Cg fill='white'%3E%3Cpath d='M14 14h14v14H14zm4 4v6h6v-6zM36 14h14v14H36zm4 4v6h6v-6zM14 36h14v14H14zm4 4v6h6v-6z'/%3E%3Cpath d='M36 36h5v5h-5zm9 0h5v5h-5zm-9 9h5v5h-5zm6-3h5v5h-5zm5 5h3v3h-3z'/%3E%3C/g%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f5f2;
+      --surface: #fff;
+      --surface-muted: #f0f0ed;
+      --surface-hover: #e9e9e5;
+      --text: #20211f;
+      --muted: #666963;
+      --line: #dadbd6;
+      --line-strong: #bfc1ba;
+      --accent: #16624f;
+      --accent-hover: #0e503f;
+      --accent-soft: #e1f0ea;
+      --danger: #b3261e;
+      --warning: #8a5a00;
+      --warning-soft: #fff6df;
+      --focus: #4d8bc7;
+      --shadow-sm: 0 1px 2px rgba(25,28,24,.08),0 1px 6px rgba(25,28,24,.04);
+      --shadow-md: 0 12px 34px rgba(25,28,24,.11);
+      --radius: 14px;
+      --header-height: 66px;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+      font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    button,input,select { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible,summary:focus-visible {
+      outline: 3px solid color-mix(in srgb,var(--focus) 55%,transparent); outline-offset: 2px;
+    }
+    .app-header {
+      position: sticky; z-index: 30; top: 0; min-height: var(--header-height);
+      border-bottom: 1px solid color-mix(in srgb,var(--line) 82%,transparent);
+      background: color-mix(in srgb,var(--bg) 92%,transparent); backdrop-filter: blur(16px) saturate(1.2);
+    }
+    .header-inner { width: min(1100px,100%); min-height: var(--header-height); margin: 0 auto; padding: 10px clamp(14px,2.8vw,30px); display: flex; align-items: center; gap: 14px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 11px; background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
+    .brand-mark svg { width: 21px; height: 21px; display: block; }
+    .brand-copy { min-width: 0; }
+    .brand-name { margin: 0; font-size: 17px; line-height: 1.2; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .version-badge { display: inline-flex; align-items: center; margin-left: 7px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface-muted); font-size: 10px; font-weight: 650; vertical-align: 2px; }
+    .brand-meta { margin: 2px 0 0; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .language-button,.header-icon-button { padding: 5px 1px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+    .language-button { font-size: 12px; font-weight: 750; letter-spacing: .02em; }
+    .language-button:hover,.header-icon-button:hover { color: var(--text); }
+    .header-icon-button { display: inline-grid; place-items: center; }
+    .header-icon-button svg { width: 20px; height: 20px; display: block; }
+    .main { width: min(1100px,100%); margin: 0 auto; padding: 22px clamp(14px,2.8vw,30px) 54px; }
+    .page-intro { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 0 2px 16px; }
+    .page-intro h1 { margin: 0; font-size: clamp(22px,3vw,29px); line-height: 1.28; letter-spacing: -.03em; }
+    .page-intro p { margin: 6px 0 0; max-width: 730px; color: var(--muted); font-size: 13px; }
+    .local-badge { display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto; margin-top: 3px; padding: 7px 10px; border: 1px solid color-mix(in srgb,var(--accent) 24%,var(--line)); border-radius: 999px; color: var(--accent); background: var(--accent-soft); font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .local-badge svg { width: 15px; height: 15px; }
+    .mode-switch { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; margin: 0 0 16px; padding: 4px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-muted); }
+    .mode-tab { min-height: 46px; padding: 9px 12px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-weight: 760; cursor: pointer; }
+    .mode-tab[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+    .panel { padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
+    .panel[hidden] { display: none; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 16px; }
+    .panel-head h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+    .panel-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .drop-zone { position: relative; display: grid; place-items: center; min-height: 190px; padding: 28px 18px; border: 1.5px dashed var(--line-strong); border-radius: 14px; background: #fbfbf9; text-align: center; cursor: pointer; transition: border-color .16s ease,background .16s ease,transform .16s ease; }
+    .drop-zone:hover,.drop-zone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+    .drop-zone.dragover { transform: scale(.996); }
+    .drop-zone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .drop-icon { display: grid; place-items: center; width: 48px; height: 48px; margin: 0 auto 10px; border-radius: 14px; background: var(--surface-muted); color: var(--accent); }
+    .drop-icon svg { width: 24px; height: 24px; }
+    .drop-title { margin: 0; font-size: 15px; font-weight: 780; }
+    .drop-body { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .file-card { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-muted); }
+    .file-card[hidden] { display: none; }
+    .file-main { min-width: 0; display: flex; align-items: center; gap: 11px; }
+    .file-icon { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto; border-radius: 10px; background: var(--surface); color: var(--accent); }
+    .file-icon svg { width: 20px; height: 20px; }
+    .file-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 760; }
+    .file-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .icon-button { display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; }
+    .icon-button:hover { border-color: var(--line-strong); background: var(--surface-hover); }
+    .icon-button svg { width: 18px; height: 18px; }
+    .settings { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 14px; }
+    .setting { padding: 14px; border: 1px solid var(--line); border-radius: 13px; }
+    .setting-label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 760; }
+    .choice-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+    .choice { position: relative; }
+    .choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .choice span { display: flex; min-height: 44px; align-items: center; justify-content: center; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 720; cursor: pointer; text-align: center; }
+    .choice input:checked + span { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+    .select { width: 100%; min-height: 44px; padding: 8px 34px 8px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); }
+    .estimate { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; margin-top: 14px; }
+    .metric { padding: 10px; border-radius: 11px; background: var(--surface-muted); text-align: center; }
+    .metric strong { display: block; font-size: 15px; line-height: 1.2; }
+    .metric span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+    .button { min-height: 42px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-weight: 740; cursor: pointer; }
+    .button:hover:not(:disabled) { border-color: var(--line-strong); background: var(--surface-hover); }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .button.primary:hover:not(:disabled) { border-color: var(--accent-hover); background: var(--accent-hover); }
+    .button.danger { color: var(--danger); }
+    .button:disabled { opacity: .48; cursor: not-allowed; }
+    .button svg { width: 17px; height: 17px; vertical-align: -3px; margin-right: 5px; }
+    .status-card { margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #fbfbf9; }
+    .status-card[hidden] { display: none; }
+    .status-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .status-title { margin: 0; font-size: 13px; font-weight: 780; }
+    .status-value { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .progress { height: 8px; margin-top: 10px; overflow: hidden; border-radius: 999px; background: var(--surface-muted); }
+    .progress > div { width: 0%; height: 100%; border-radius: inherit; background: var(--accent); transition: width .18s linear; }
+    .status-text { margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+    .warning { margin-top: 14px; padding: 11px 12px; border: 1px solid #ead9a9; border-radius: 11px; background: var(--warning-soft); color: #6d4a05; font-size: 12px; }
+    .warning[hidden] { display: none; }
+    .result { margin-top: 14px; padding: 16px; border: 1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius: 14px; background: var(--accent-soft); }
+    .result[hidden] { display: none; }
+    .result-head { display: flex; align-items: center; gap: 10px; }
+    .result-icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 auto; border-radius: 50%; background: var(--surface); color: var(--accent); }
+    .result-icon svg { width: 19px; height: 19px; }
+    .result h3 { margin: 0; font-size: 14px; }
+    .result p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+    .preview-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(240px,.7fr); gap: 14px; margin-top: 14px; }
+    .video-card,.qr-card { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fbfbf9; }
+    .video-card { display: grid; place-items: center; overflow: hidden; }
+    .video-card video, .video-card img { width: min(100%, 900px); height: auto; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 9px; background: #fff; display: block; }
+    .video-card img[hidden], .restore-video img[hidden] { display: none; }
+    .qr-card { display: grid; place-items: center; }
+    .qr-card canvas { width: min(100%,360px); height: auto; aspect-ratio: 1; border-radius: 8px; background: white; box-shadow: inset 0 0 0 1px var(--line); }
+    .camera-card { margin-top: 2px; padding: 15px; border: 1px solid color-mix(in srgb,var(--accent) 24%,var(--line)); border-radius: 14px; background: var(--accent-soft); }
+    .camera-card h3 { margin: 0; font-size: 14px; }
+    .camera-card p { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .camera-stage { position: relative; width: min(100%, 620px); aspect-ratio: 1 / 1; margin: 13px auto 0; overflow: hidden; border-radius: 14px; background: #111; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+    .camera-stage[hidden] { display: none; }
+    .camera-stage video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .camera-guide { position: absolute; inset: 4%; border: 2px solid rgba(255,255,255,.92); border-radius: 9px; box-shadow: 0 0 0 999px rgba(0,0,0,.18); pointer-events: none; }
+    .camera-guide::before,.camera-guide::after { content: ''; position: absolute; background: rgba(255,255,255,.28); }
+    .camera-guide::before { left: 50%; top: 0; bottom: 0; width: 1px; }
+    .camera-guide::after { top: 50%; left: 0; right: 0; height: 1px; }
+    .camera-hint { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); width: max-content; max-width: 88%; padding: 6px 9px; border-radius: 999px; background: rgba(0,0,0,.62); color: #fff; font-size: 10px; text-align: center; pointer-events: none; }
+
+    .camera-tuning { margin-top: 10px; padding: 10px 11px; border: 1px solid rgba(0,0,0,.09); border-radius: 10px; background: rgba(255,255,255,.58); }
+    .camera-tuning[hidden] { display: none; }
+    .camera-tuning-row { display: grid; grid-template-columns: auto minmax(120px,1fr) auto; gap: 9px; align-items: center; }
+    .camera-tuning label { color: var(--muted); font-size: 11px; font-weight: 700; }
+    .camera-tuning input[type=range] { width: 100%; accent-color: var(--accent); }
+    .camera-tuning-value { min-width: 38px; text-align: right; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .camera-tuning-note { margin: 6px 0 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+
+    .restore-divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .restore-divider::before,.restore-divider::after { content: ''; height: 1px; flex: 1; background: var(--line); }
+    .restore-video { margin-top: 14px; display: grid; place-items: center; overflow: hidden; }
+    .restore-video[hidden] { display: none; }
+    .restore-video video, .restore-video img { width: min(100%, 900px); height: auto; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 12px; background: #fff; display: block; }
+    .preview-fallback { width: min(100%, 900px); min-height: 150px; padding: 24px 18px; display: grid; place-items: center; gap: 8px; border: 1px dashed var(--line); border-radius: 12px; background: var(--surface-muted); color: var(--muted); text-align: center; }
+    .preview-fallback[hidden] { display: none; }
+    .preview-fallback svg { width: 30px; height: 30px; opacity: .72; }
+    .preview-fallback strong { color: var(--text); font-size: 12px; }
+    .preview-fallback span { max-width: 520px; font-size: 11px; line-height: 1.55; }
+    #generatedVideo:fullscreen { width: 100vw; height: 100vh; max-width: none; object-fit: contain; border-radius: 0; background: #111; }
+    .restore-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; margin-top: 12px; }
+    .restore-stat { padding: 9px; border-radius: 10px; background: var(--surface-muted); text-align: center; }
+    .restore-stat strong { display: block; font-size: 14px; }
+    .restore-stat span { display: block; color: var(--muted); font-size: 9px; margin-top: 2px; }
+    .technical { margin-top: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+    .technical summary { cursor: pointer; padding: 13px 14px; font-size: 12px; font-weight: 740; }
+    .tech-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; padding: 0 14px 14px; }
+    .tech-item { padding: 10px; border-radius: 9px; background: var(--surface-muted); }
+    .tech-item span { display: block; color: var(--muted); font-size: 9px; }
+    .tech-item strong { display: block; margin-top: 2px; overflow-wrap: anywhere; font-size: 11px; }
+    footer { width: min(1100px,100%); margin: 0 auto; padding: 0 clamp(14px,2.8vw,30px) 34px; color: var(--muted); font-size: 11px; text-align: center; }
+    .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: min(380px,calc(100vw - 36px)); padding: 11px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .18s ease,transform .18s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    dialog { width: min(650px,calc(100% - 28px)); max-height: min(780px,calc(100dvh - 28px)); padding: 0; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--text); box-shadow: var(--shadow-md); }
+    dialog::backdrop { background: rgba(15,17,14,.52); backdrop-filter: blur(4px); }
+    .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .dialog-header h2 { margin: 0; font-size: 17px; }
+    .dialog-body { flex: 1 1 auto; min-height: 0; padding: 20px 20px calc(28px + env(safe-area-inset-bottom,0px)); overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    .dialog-body h3 { margin: 25px 0 8px; padding-top: 19px; border-top: 1px solid color-mix(in srgb,var(--line) 78%,transparent); font-size: 14px; }
+    .dialog-body h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .dialog-body p,.dialog-body li { color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .dialog-body p { margin: 8px 0 0; }
+    .dialog-body ul,.dialog-body ol { margin: 8px 0 0; padding-left: 22px; }
+    .dialog-body li + li { margin-top: 7px; }
+    .dialog-note { margin-top: 12px; padding: 11px 12px; border: 1px solid color-mix(in srgb,var(--accent) 22%,var(--line)); border-radius: 10px; background: var(--accent-soft); color: var(--text)!important; }
+    .app-confirm-dialog { width: min(420px,calc(100% - 24px)); max-width: 100%; }
+    .app-confirm-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 18px 13px; border-bottom: 1px solid var(--line); }
+    .app-confirm-title { margin: 0; font-size: 17px; }
+    .app-confirm-close { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer; }
+    .app-confirm-close:hover { background: var(--surface-hover); }
+    .app-confirm-close svg { width: 19px; height: 19px; }
+    .app-confirm-body { padding: 18px; }
+    .app-confirm-message { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .app-confirm-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-top: 18px; }
+    .app-confirm-button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); font: inherit; font-size: 12px; font-weight: 760; cursor: pointer; }
+    .app-confirm-button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .app-confirm-button.danger { border-color: var(--danger); background: var(--danger); color: #fff; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    @media (max-width: 760px) {
+      .page-intro { flex-direction: column; gap: 10px; }
+      .local-badge { align-self: flex-start; }
+      .preview-wrap { grid-template-columns: 1fr; }
+      .restore-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .estimate { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .tech-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      :root { --header-height: 58px; }
+      .header-inner { padding-block: 8px; }
+      .brand-mark { width: 34px; height: 34px; border-radius: 10px; }
+      .brand-name { font-size: 15px; }
+      .brand-meta { display: none; }
+      .main { padding-top: 17px; }
+      .panel { padding: 14px; border-radius: 14px; }
+      .panel-head { flex-direction: column; }
+      .drop-zone { min-height: 170px; }
+      .settings { grid-template-columns: 1fr; }
+      .estimate { gap: 5px; }
+      .metric { padding-inline: 6px; }
+      .metric strong { font-size: 13px; }
+      .action-row .button { flex: 1 1 auto; }
+      .file-card { grid-template-columns: minmax(0,1fr) auto; }
+      #helpDialog { width: min(720px,calc(100% - 18px)); max-height: calc(100dvh - 18px); margin: auto; }
+      .dialog-header { padding: 14px 16px; }
+      .dialog-body { padding: 16px 16px calc(24px + env(safe-area-inset-bottom,0px)); }
+      .app-confirm-dialog { width: 100%; max-width: none; margin: auto 0 0; border-width: 1px 0 0; border-radius: 22px 22px 0 0; }
+      .app-confirm-body { padding: 12px 18px calc(env(safe-area-inset-bottom) + 18px); }
+      .app-confirm-actions { grid-template-columns: 1fr; gap: 10px; }
+      .app-confirm-button { min-height: 48px; font-size: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { scroll-behavior: auto!important; transition-duration: .01ms!important; animation-duration: .01ms!important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3Zm2 2v3h3V5H5Zm9-2h7v7h-7V3Zm2 2v3h3V5h-3ZM3 14h7v7H3v-7Zm2 2v3h3v-3H5Zm9-2h3v3h-3v-3Zm4 0h3v3h-3v-3Zm-4 4h3v3h-3v-3Zm4 0h3v3h-3v-3Z"/></svg>
+        </div>
+        <div class="brand-copy">
+          <p class="brand-name"><span id="brandName">Optical File</span><span class="version-badge" id="versionBadge">v1.0.0</span></p>
+          <p class="brand-meta" data-i18n="brandMeta">ファイルをAnimated QRにする</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="language-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
+        <button class="header-icon-button" id="helpButton" type="button" data-i18n-title="helpTitle" data-i18n-aria-label="helpTitle" title="使い方と注意事項" aria-label="使い方と注意事項">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.35 2.35 0 1 1 3.72 1.9c-.92.67-1.52 1.12-1.52 2.1"/><path d="M12 17h.01"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="page-intro">
+      <div>
+        <h1 data-i18n="introTitle">ファイルを、動くQRにする。</h1>
+        <p data-i18n="lead">ファイルを連続QRへ変換してAnimated WebPとして保存。あとからそのWebPを読み込むだけで、元のファイルへ復元できます。</p>
+      </div>
+      <div class="local-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></svg>
+        <span data-i18n="localBadge">ファイルを送信しません</span>
+      </div>
+    </section>
+
+    <!-- APP:BEGIN Optical File application -->
+    <div class="mode-switch" role="tablist" aria-label="Mode">
+      <button class="mode-tab" id="createTab" role="tab" aria-selected="true" aria-controls="createPanel" type="button" data-i18n="createTab">Animated QRを作る</button>
+      <button class="mode-tab" id="restoreTab" role="tab" aria-selected="false" aria-controls="restorePanel" type="button" data-i18n="restoreTab">Animated QRから復元</button>
+    </div>
+
+    <section class="panel" id="createPanel" role="tabpanel" aria-labelledby="createTab">
+      <div class="panel-head">
+        <div>
+          <h2 data-i18n="createTitle">Animated QRを作る</h2>
+          <p data-i18n="createBody">小さなファイルを連続QRへ変換し、1つのAnimated WebPとして保存します。</p>
+        </div>
+      </div>
+
+      <label class="drop-zone" id="sourceDropZone">
+        <input id="sourceInput" type="file">
+        <span>
+          <span class="drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 13v6h14v-6"/></svg></span>
+          <span class="drop-title" data-i18n="sourceDropTitle">ファイルを選択</span>
+          <span class="drop-body" data-i18n="sourceDropBody">またはここへドロップ · 最大1 MiB</span>
+        </span>
+      </label>
+
+      <div class="file-card" id="sourceFileCard" hidden>
+        <div class="file-main">
+          <div class="file-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/></svg></div>
+          <div style="min-width:0"><span class="file-name" id="sourceFileName"></span><span class="file-meta" id="sourceFileMeta"></span></div>
+        </div>
+        <button class="icon-button" id="replaceSourceButton" type="button" data-i18n-title="replaceFile" data-i18n-aria-label="replaceFile" title="別のファイル" aria-label="別のファイル"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7"/><path d="M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3"/><path d="M4 20v-4.7h4.7"/></svg></button>
+      </div>
+
+      <div class="settings" id="createSettings">
+        <div class="setting">
+          <span class="setting-label" data-i18n="layoutLabel">転送方式</span>
+          <div class="choice-row">
+            <label class="choice"><input type="radio" name="tileMode" value="1" checked><span data-i18n="compatMode">カメラ優先 · 1 QR / frame</span></label>
+            <label class="choice"><input type="radio" name="tileMode" value="4"><span data-i18n="fastMode">速度優先 · 4 QR / frame</span></label>
+          </div>
+        </div>
+        <label class="setting">
+          <span class="setting-label" data-i18n="fpsLabel">フレームレート</span>
+          <select class="select" id="fpsSelect">
+            <option value="4">4 fps</option>
+            <option value="6" selected>6 fps</option>
+            <option value="8">8 fps</option>
+            <option value="10">10 fps</option>
+            <option value="12">12 fps</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="estimate" aria-live="polite">
+        <div class="metric"><strong id="chunkEstimate">—</strong><span data-i18n="chunksLabel">データブロック</span></div>
+        <div class="metric"><strong id="frameEstimate">—</strong><span data-i18n="framesLabel">データフレーム</span></div>
+        <div class="metric"><strong id="durationEstimate">—</strong><span data-i18n="durationLabel">目安時間</span></div>
+        <div class="metric"><strong id="outputEstimate">—</strong><span data-i18n="outputLabel">WebPサイズ目安</span></div>
+      </div>
+
+      <div class="warning" id="sourceSizeWarning" hidden data-i18n="largeSourceWarning">512 KiBを超えるとフレーム数がかなり増えます。カメラ復元を優先してQRを大きめにしているため、1 MiB以下限定です。</div>
+      <div class="warning" id="recordingWarning" hidden></div>
+
+      <div class="action-row">
+        <button class="button primary" id="generateButton" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 5 11 7-11 7z"/></svg><span data-i18n="generate">Animated WebPを生成</span></button>
+        <button class="button" id="cancelGenerateButton" type="button" hidden data-i18n="cancel">キャンセル</button>
+      </div>
+
+      <div class="status-card" id="generateStatus" hidden aria-live="polite">
+        <div class="status-top"><p class="status-title" id="generateStatusTitle">—</p><span class="status-value" id="generateStatusValue">0%</span></div>
+        <div class="progress"><div id="generateProgress"></div></div>
+        <p class="status-text" id="generateStatusText"></p>
+      </div>
+
+      <div class="result" id="createResult" hidden>
+        <div class="result-head">
+          <span class="result-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-9"/></svg></span>
+          <div><h3 data-i18n="videoReady">Animated QRを作成しました</h3><p id="videoResultMeta"></p></div>
+        </div>
+        <div class="action-row">
+          <button class="button primary" id="downloadVideoButton" type="button" data-i18n="downloadVideo">WebPを保存</button>
+          <button class="button" id="fullscreenQrButton" type="button" data-i18n="fullscreenQr">QRを全画面表示</button>
+          <button class="button" id="sendToRestoreButton" type="button" data-i18n="testRestore">このWebPを復元テスト</button>
+        </div>
+        <div class="preview-wrap">
+          <div class="video-card">
+            <img id="generatedVideo" alt="Animated QR preview" hidden>
+            <div class="preview-fallback" id="generatedPreviewFallback" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 15 3-3 2 2 3-4 3 5"/><path d="M8 9h.01"/></svg>
+              <strong data-i18n="previewUnavailable">プレビューを表示できません</strong>
+              <span data-i18n="generatedPreviewFallbackBody">WebPは生成済みです。保存や復元テストはそのまま利用できます。</span>
+            </div>
+          </div>
+          <div class="qr-card"><canvas id="qrPreviewCanvas" width="540" height="540" aria-label="QR preview"></canvas></div>
+        </div>
+      </div>
+
+      <details class="technical">
+        <summary data-i18n="technicalTitle">技術情報</summary>
+        <div class="tech-grid">
+          <div class="tech-item"><span>Protocol</span><strong>BKOF1 / BK2D / Animated WebP</strong></div>
+          <div class="tech-item"><span data-i18n="chunkCheck">チャンク検証</span><strong>CRC32</strong></div>
+          <div class="tech-item"><span data-i18n="fileCheck">ファイル検証</span><strong>SHA-256</strong></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" id="restorePanel" role="tabpanel" aria-labelledby="restoreTab" hidden>
+      <div class="panel-head">
+        <div>
+          <h2 data-i18n="restoreTitle">Animated QRから元のファイルを復元</h2>
+          <p data-i18n="restoreBody">別端末に表示したAnimated QRをカメラで読み取るか、WebPを直接読み込んで復元します。</p>
+        </div>
+      </div>
+
+      <div class="camera-card">
+        <h3 data-i18n="cameraTitle">カメラで読み取る</h3>
+        <p data-i18n="cameraBody">別の端末でAnimated QRを表示し、QR全体が枠に入るようにカメラを向けてください。取得済みブロックは自動で蓄積します。</p>
+        <div class="action-row">
+          <button class="button primary" id="startCameraButton" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-i18n="startCamera">カメラを開始</span></button>
+          <button class="button" id="stopCameraButton" type="button" hidden data-i18n="stopCamera">カメラを停止</button>
+        </div>
+        <div class="camera-stage" id="cameraStage" hidden>
+          <video id="cameraVideo" autoplay muted playsinline></video>
+          <div class="camera-guide" aria-hidden="true"></div>
+          <div class="camera-hint" data-i18n="cameraAlign">Animated QR全体を枠に合わせてください</div>
+        </div>
+        <div class="camera-tuning" id="cameraTuning" hidden>
+          <div class="camera-tuning-row">
+            <label for="exposureSlider" data-i18n="exposureLabel">露出補正</label>
+            <input id="exposureSlider" type="range" min="-2" max="0" step="0.1" value="-1.2">
+            <span class="camera-tuning-value" id="exposureValue">-1.2</span>
+          </div>
+          <p class="camera-tuning-note" data-i18n="exposureHint">画面が白く光る場合は、左へ動かすと白飛びを抑えられます。</p>
+        </div>
+      </div>
+
+      <div class="restore-divider"><span data-i18n="orWebp">またはWebPファイルから</span></div>
+
+      <label class="drop-zone" id="videoDropZone">
+        <input id="videoInput" type="file" accept="image/webp,.webp">
+        <span>
+          <span class="drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2z"/></svg></span>
+          <span class="drop-title" data-i18n="videoDropTitle">Animated WebPを選択</span>
+          <span class="drop-body" data-i18n="videoDropBody">またはここへドロップ · .webp</span>
+        </span>
+      </label>
+
+      <div class="file-card" id="videoFileCard" hidden>
+        <div class="file-main">
+          <div class="file-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg></div>
+          <div style="min-width:0"><span class="file-name" id="videoFileName"></span><span class="file-meta" id="videoFileMeta"></span></div>
+        </div>
+        <button class="icon-button" id="replaceVideoButton" type="button" data-i18n-title="replaceVideo" data-i18n-aria-label="replaceVideo" title="別のWebP" aria-label="別のWebP"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7"/><path d="M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3"/><path d="M4 20v-4.7h4.7"/></svg></button>
+      </div>
+
+      <div class="settings" id="restoreSettings">
+        <div class="setting">
+          <span class="setting-label" data-i18n="decodeModeLabel">解析方式</span>
+          <div style="color:var(--muted);font-size:11px" data-i18n="decodeModeBody">Animated WebPのフレームを再生待ちせず直接解析します。</div>
+        </div>
+        <div class="setting">
+          <span class="setting-label" data-i18n="rescanLabel">取りこぼしたとき</span>
+          <div style="color:var(--muted);font-size:11px" data-i18n="rescanBody">同じWebPをもう一度解析すると、不足分だけ追加取得します。</div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="button" id="scanButton" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/><path d="M8 8h8v8H8z"/></svg><span data-i18n="startScan">解析を開始</span></button>
+        <button class="button" id="stopScanButton" type="button" hidden data-i18n="stopScan">停止</button>
+        <button class="button danger" id="resetRestoreButton" type="button" disabled data-i18n="resetRestore">復元状態をリセット</button>
+      </div>
+
+      <div class="restore-video" id="restoreVideoWrap" hidden>
+        <img id="restoreVideo" alt="Animated QR preview" hidden>
+        <div class="preview-fallback" id="restorePreviewFallback" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 15 3-3 2 2 3-4 3 5"/><path d="M8 9h.01"/></svg>
+          <strong data-i18n="previewUnavailable">プレビューを表示できません</strong>
+          <span data-i18n="restorePreviewFallbackBody">画像表示に対応していない場合でも、WebPの直接解析はそのまま利用できます。</span>
+        </div>
+      </div>
+
+      <div class="status-card" id="restoreStatus" hidden aria-live="polite">
+        <div class="status-top"><p class="status-title" id="restoreStatusTitle">—</p><span class="status-value" id="restoreStatusValue">0%</span></div>
+        <div class="progress"><div id="restoreProgress"></div></div>
+        <p class="status-text" id="restoreStatusText"></p>
+        <div class="restore-stats">
+          <div class="restore-stat"><strong id="acceptedCount">0</strong><span data-i18n="acceptedLabel">取得済み</span></div>
+          <div class="restore-stat"><strong id="missingCount">—</strong><span data-i18n="missingLabel">不足</span></div>
+          <div class="restore-stat"><strong id="invalidCount">0</strong><span data-i18n="invalidLabel">破損フレーム</span></div>
+          <div class="restore-stat"><strong id="scanPassCount">0</strong><span data-i18n="passLabel">解析回数</span></div>
+        </div>
+      </div>
+
+      <div class="result" id="restoreResult" hidden>
+        <div class="result-head">
+          <span class="result-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-9"/></svg></span>
+          <div><h3 data-i18n="restoreReady">元のファイルを復元しました</h3><p id="restoreResultMeta"></p></div>
+        </div>
+        <div class="action-row"><button class="button primary" id="downloadRestoredButton" type="button" data-i18n="downloadRestored">元のファイルを保存</button></div>
+      </div>
+
+      <canvas id="scanCanvas" width="900" height="900" hidden></canvas>
+    </section>
+    <!-- APP:END -->
+  </main>
+
+  <footer><span id="footerName">Optical File</span> · <span data-i18n="footer">QR Tape · Animated QR / WebP · ローカル処理</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="app-confirm-dialog" id="appConfirmDialog" aria-labelledby="appConfirmTitle">
+    <div class="app-confirm-header"><h2 class="app-confirm-title" id="appConfirmTitle">確認</h2><button class="app-confirm-close" id="appConfirmClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg></button></div>
+    <div class="app-confirm-body"><p class="app-confirm-message" id="appConfirmMessage"></p><div class="app-confirm-actions"><button class="app-confirm-button" id="appConfirmCancel" type="button">キャンセル</button><button class="app-confirm-button primary" id="appConfirmOk" type="button">実行する</button></div></div>
+  </dialog>
+
+  <dialog id="helpDialog" aria-labelledby="helpTitle">
+    <div class="dialog-header"><h2 id="helpTitle" data-i18n="helpTitle">使い方と注意事項</h2><button class="icon-button" id="closeHelpButton" type="button" data-i18n-title="close" data-i18n-aria-label="close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg></button></div>
+    <div class="dialog-body">
+      <!-- APP:HELP:BEGIN -->
+      <h3 data-i18n="helpCreateTitle">Animated QRを作る</h3>
+      <ol><li data-i18n="helpCreate1">「Animated QRを作る」で1 MiB以下のファイルを選びます。カメラ復元しやすいよう、上限自体を1 MiBにしています。</li><li data-i18n="helpCreate2">通常は「カメラ優先・1 QR / frame」「6 fps」がおすすめです。1枚のQRを大きく粗くして、画面撮影で読み取りやすくしています。</li><li data-i18n="helpCreate3">完成したAnimated WebPを保存します。</li></ol>
+      <h3 data-i18n="helpRestoreTitle">Animated QRから復元</h3>
+      <ol><li data-i18n="helpRestore1">別端末でAnimated QRを表示して「カメラを開始」を押し、QR全体を枠に合わせます。WebPファイルを直接選んで解析することもできます。</li><li data-i18n="helpRestore2">カメラ読み取りではデータQRをメタデータより先に拾っても仮保存します。メタデータQRも約2秒ごとに再表示されるため、先頭を待つ必要はありません。</li><li data-i18n="helpRestore3">すべて揃うとSHA-256で検証し、一致した場合だけ元ファイルを保存できます。</li></ol>
+      <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
+      <p data-i18n="helpPrivacyBody">ファイル、WebP、解析結果はこのブラウザー内だけで処理されます。このアプリは実行時にネットワーク接続しません。</p>
+      <h3 data-i18n="helpNotesTitle">注意事項</h3>
+      <ul><li data-i18n="helpNoteEncryption">生成したAnimated WebPには元ファイルのデータが入っています。暗号化はしていないため、WebPを持つ人は元ファイルを復元できます。</li><li data-i18n="helpNoteSize">Animated WebPは元ファイルよりかなり大きくなる場合があります。小さなファイル向けです。</li><li data-i18n="helpNoteCodec">出力はAnimated WebPです。復元にはAnimated WebPのフレームデコードに対応したブラウザーが必要です。</li><li data-i18n="helpNoteDrops">QRの読み取りに失敗したフレームがあっても、同じWebPを再解析すると不足分だけ補完できます。</li></ul>
+      <p class="dialog-note" data-i18n="helpOffline">CRC32で各データブロックを、SHA-256で復元ファイル全体を検証します。ただし欠落訂正や暗号化を行うツールではありません。</p>
+      <!-- APP:HELP:END -->
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const APP_CONFIG = __APP_CONFIG_JSON__;
+      const BUILD_MANIFEST = __BUILD_MANIFEST_JSON__;
+      const EMBEDDED_ASSET_BUNDLE_BASE64 = '__EMBEDDED_ASSET_BUNDLE_BASE64__';
+      const MAX_SOURCE_BYTES = 1 * 1024 * 1024;
+      const QR_DATA_CHUNK_BYTES = 200;
+      const QR_DATA_CHUNK_BYTES_TILED = 160;
+      const MAX_SUPPORTED_CHUNK_BYTES = 700;
+      const PROTOCOL = 'BKOF1';
+      const COMPACT_META_PREFIX = 'BK3M';
+      const META_REPEAT_DATA_FRAMES = 12;
+      const FRAME_SIZE = 900;
+      const QR_TILE_SIZE = 400;
+      const QR_FULL_SIZE = 760;
+      const JSQR_TILE_SCAN_SIZE = 390;
+      const CARRIER_LIGHT = '#a8a8a8';
+      const CARRIER_DARK = '#050505';
+      const JSQR_FULL_SCAN_SIZE = 720;
+
+      function decodeBase64Bytes(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+        return bytes;
+      }
+      function decodeBase64Utf8(base64) { return new TextDecoder().decode(decodeBase64Bytes(base64)); }
+      const assetBundle = JSON.parse(decodeBase64Utf8(EMBEDDED_ASSET_BUNDLE_BASE64));
+      const blobUrls = new Set();
+      window.StandaloneAssets = Object.freeze({
+        manifest: BUILD_MANIFEST,
+        bytes(dependencyId, assetKey) {
+          const asset = assetBundle.dependencies?.[dependencyId]?.assets?.[assetKey];
+          if (!asset) throw new Error(`Embedded asset not found: ${dependencyId}/${assetKey}`);
+          return decodeBase64Bytes(asset.base64);
+        },
+        blobUrl(dependencyId, assetKey) {
+          const asset = assetBundle.dependencies?.[dependencyId]?.assets?.[assetKey];
+          if (!asset) throw new Error(`Embedded asset not found: ${dependencyId}/${assetKey}`);
+          const url = URL.createObjectURL(new Blob([this.bytes(dependencyId, assetKey)], { type: asset.mime || 'application/octet-stream' }));
+          blobUrls.add(url); return url;
+        },
+        async loadClassicScript(dependencyId, assetKey, globalName = '') {
+          const sourceUrl = this.blobUrl(dependencyId, assetKey);
+          try {
+            await new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              script.src = sourceUrl; script.onload = resolve;
+              script.onerror = () => reject(new Error(`Failed to load embedded script: ${dependencyId}/${assetKey}`));
+              document.head.append(script);
+            });
+            return globalName ? window[globalName] : true;
+          } finally { URL.revokeObjectURL(sourceUrl); blobUrls.delete(sourceUrl); }
+        }
+      });
+      window.addEventListener('pagehide', () => { blobUrls.forEach(url => URL.revokeObjectURL(url)); blobUrls.clear(); });
+
+      const translations = {
+        ja: {
+          brandMeta:'ファイルをAnimated QRにする', helpTitle:'使い方と注意事項', close:'閉じる', introTitle:'ファイルを、動くQRにする。', lead:'ファイルを連続QRへ変換してAnimated WebPとして保存。別端末のカメラで読み取るか、WebPを直接解析して元のファイルへ復元できます。', localBadge:'ファイルを送信しません',
+          createTab:'Animated QRを作る', restoreTab:'Animated QRから復元', createTitle:'Animated QRを作る', createBody:'最大1 MiBのファイルを、画面撮影で読み取りやすい低輝度・低密度QRへ変換し、1つのAnimated WebPとして保存します。', sourceDropTitle:'ファイルを選択', sourceDropBody:'またはここへドロップ · 最大1 MiB', replaceFile:'別のファイル', layoutLabel:'転送方式', fastMode:'速度優先 · 4 QR / frame', compatMode:'カメラ優先 · 1 QR / frame', fpsLabel:'フレームレート', chunksLabel:'データブロック', framesLabel:'データフレーム', durationLabel:'目安時間', outputLabel:'WebPサイズ目安', largeSourceWarning:'512 KiBを超えるとフレーム数がかなり増えます。カメラ復元を優先してQRを大きめにしているため、1 MiB以下限定です。', generate:'Animated WebPを生成', cancel:'キャンセル', videoReady:'Animated QRを作成しました', downloadVideo:'WebPを保存', fullscreenQr:'QRを全画面表示', testRestore:'このWebPを復元テスト', technicalTitle:'技術情報', chunkCheck:'チャンク検証', fileCheck:'ファイル検証',
+          restoreTitle:'Animated QRから元のファイルを復元', restoreBody:'別端末に表示したAnimated QRをカメラで読み取るか、WebPを直接読み込んで復元します。', cameraTitle:'カメラで読み取る', cameraBody:'別の端末でAnimated QRを表示し、QR全体が枠に入るようにカメラを向けてください。取得済みブロックは自動で蓄積します。', startCamera:'カメラを開始', stopCamera:'カメラを停止', cameraAlign:'QR全体を枠に合わせてください', exposureLabel:'露出補正', exposureHint:'画面が白く光る場合は、左へ動かすと白飛びを抑えられます。', orWebp:'またはWebPファイルから', videoDropTitle:'Animated WebPを選択', videoDropBody:'またはここへドロップ · .webp', replaceVideo:'別のWebP', scanSpeedLabel:'解析速度', scanReliable:'確実 · 1×', scanFast:'高速 · 2×', scanTurbo:'ターボ · 3×', rescanLabel:'取りこぼしたとき', rescanBody:'カメラでは画面を向け続けると不足分を自動補完します。WebP解析では同じファイルを再解析できます。', decodeModeLabel:'高速解析', decodeModeBody:'Animated WebPのフレームを表示時間を待たずに直接解析します。', startScan:'WebPを解析', stopScan:'停止', resetRestore:'復元状態をリセット', acceptedLabel:'取得済み', missingLabel:'不足', invalidLabel:'破損フレーム', passLabel:'解析回数', restoreReady:'元のファイルを復元しました', downloadRestored:'元のファイルを保存', footer:'QR Tape · Animated QR / WebP · ローカル処理', previewUnavailable:'プレビューを表示できません', generatedPreviewFallbackBody:'WebPは生成済みです。保存や復元テストはそのまま利用できます。', restorePreviewFallbackBody:'画像表示に対応していない場合でも、WebPの直接解析はそのまま利用できます。',
+          helpCreateTitle:'Animated QRを作る', helpCreate1:'「Animated QRを作る」で1 MiB以下のファイルを選びます。カメラ復元しやすいよう、上限自体を1 MiBにしています。', helpCreate2:'通常は「カメラ優先・1 QR / frame」「6 fps」がおすすめです。1枚のQRを大きく粗くして、画面撮影で読み取りやすくしています。', helpCreate3:'完成したAnimated WebPを保存します。', helpRestoreTitle:'Animated QRから復元', helpRestore1:'別端末でAnimated QRを表示して「カメラを開始」を押し、QR全体を枠に合わせます。WebPファイルを直接選んで解析することもできます。', helpRestore2:'カメラ読み取りではデータQRをメタデータより先に拾っても仮保存します。メタデータQRも約2秒ごとに再表示されるため、先頭を待つ必要はありません。', helpRestore3:'すべて揃うとSHA-256で検証し、一致した場合だけ元ファイルを保存できます。', helpPrivacyTitle:'プライバシー', helpPrivacyBody:'ファイル、WebP、解析結果はこのブラウザー内だけで処理されます。このアプリは実行時にネットワーク接続しません。', helpNotesTitle:'注意事項', helpNoteEncryption:'生成したAnimated WebPには元ファイルのデータが入っています。暗号化はしていないため、WebPを持つ人は元ファイルを復元できます。', helpNoteSize:'QRを読み取りやすくするため、1 MiB以下の小さなファイル専用です。Animated WebPは元ファイルよりかなり大きくなる場合があります。', helpNoteCodec:'出力はAnimated WebPです。カメラ復元では別端末に表示して読み取れます。WebPファイルを直接解析する場合はImageDecoder対応ブラウザーが必要です。', helpNoteDrops:'QRの読み取りに失敗したフレームがあっても、同じWebPを再解析すると不足分だけ補完できます。', helpOffline:'CRC32で各データブロックを、SHA-256で復元ファイル全体を検証します。ただし欠落訂正や暗号化を行うツールではありません。',
+          confirmTitle:'確認', confirmReplace:'現在の生成結果を破棄して別のファイルを選びますか？', confirmResetRestore:'取得済みの復元データをすべて消去しますか？', continueAction:'続ける', resetAction:'リセットする',
+          fileTooLarge:'ファイルが大きすぎます。1 MiB以下にしてください。', unsupportedWebP:'このブラウザーではWebP画像を生成できません。別のブラウザーでお試しください。', unsupportedDecoder:'このブラウザーではAnimated WebPのフレーム解析に対応していません。', unsupportedDecoderBody:'Chrome / EdgeなどImageDecoder対応ブラウザーで復元してください。', webpOnly:'Animated WebP（.webp）を選択してください。', dependencyError:'内包ライブラリを読み込めませんでした。ビルドされたHTMLを開いているか確認してください。', readyToGenerate:'生成準備完了', hashing:'ファイルを検証しています…', compressing:'転送量を最適化しています…', recording:'QRフレームを生成しています', finalizing:'Animated WebPを仕上げています…', generationCancelled:'Animated WebP生成をキャンセルしました。', generationFailed:'Animated WebP生成に失敗しました。', noSource:'先にファイルを選択してください。',
+          cameraPreparing:'カメラを準備しています…', cameraSearching:'Animated QRを読み取っています…', cameraPrecollecting:'データを先に取得中 · メタデータ待ち', cameraCollecting:'カメラでデータブロックを取得しています', cameraUnavailable:'この環境ではカメラを使用できません。', cameraError:'カメラを開始できませんでした。ブラウザーのカメラ権限を確認してください。', scanPreparing:'Animated WebPを準備しています…', scanSearching:'Animated QRを解析しています…', scanPrecollecting:'データを先に取得中 · メタデータ待ち', scanCollecting:'データブロックを解析しています', scanComplete:'すべてのチャンクを取得しました。ファイルを検証しています…', scanMissing:'不足チャンクがあります。同じWebPをもう一度解析してください。', scanStopped:'解析を停止しました。取得済みデータは保持しています。', scanFailed:'Animated WebPの解析中にエラーが発生しました。', notOpticalVideo:'Optical FileのAnimated QRを確認できませんでした。', hashMismatch:'SHA-256が一致しません。復元データが破損しています。', verified:'SHA-256一致', resetDone:'復元状態をリセットしました。', savedVideo:'WebPを保存しました。', savedFile:'元のファイルを保存しました。', libraryLoading:'復元機能を準備中…', libraryReady:'準備完了',
+          videoFileLabel:'Animated WebP', sourceFileLabel:'元ファイル', formatLabel:'形式', sizeLabel:'サイズ'
+        },
+        en: {
+          brandMeta:'Turn files into animated QR', helpTitle:'How to use & notes', close:'Close', introTitle:'Turn a file into animated QR.', lead:'Convert a file into QR frames, save them as one Animated WebP, then restore it with another device camera or by decoding the WebP directly.', localBadge:'No file upload',
+          createTab:'Create Animated QR', restoreTab:'Restore from Animated QR', createTitle:'Create Animated QR', createBody:'Turn a file up to 1 MiB into low-glare, lower-density QR frames for camera scanning and save them as one Animated WebP.', sourceDropTitle:'Choose a file', sourceDropBody:'or drop it here · up to 1 MiB', replaceFile:'Choose another file', layoutLabel:'Transport mode', fastMode:'Faster · 4 QR / frame', compatMode:'Camera-first · 1 QR / frame', fpsLabel:'Frame rate', chunksLabel:'Data blocks', framesLabel:'Data frames', durationLabel:'Estimated time', outputLabel:'Est. WebP size', largeSourceWarning:'Over 512 KiB, the frame count grows quickly. To keep QR codes easier to scan, this tool is limited to 1 MiB.', generate:'Generate Animated WebP', cancel:'Cancel', videoReady:'Animated QR created', downloadVideo:'Save WebP', fullscreenQr:'Show QR fullscreen', testRestore:'Test restore this WebP', technicalTitle:'Technical details', chunkCheck:'Chunk check', fileCheck:'File check',
+          restoreTitle:'Restore from Animated QR', restoreBody:'Scan an Animated QR shown on another device with the camera, or load the WebP directly.', cameraTitle:'Scan with camera', cameraBody:'Show the Animated QR on another device and point this camera at it so the whole carrier fits inside the guide. Accepted blocks accumulate automatically.', startCamera:'Start camera', stopCamera:'Stop camera', cameraAlign:'Fit the whole QR inside the guide', exposureLabel:'Exposure', exposureHint:'If the screen blooms or washes out, move this left to reduce overexposure.', orWebp:'or restore from a WebP file', videoDropTitle:'Choose an Animated WebP', videoDropBody:'or drop it here · .webp', replaceVideo:'Choose another WebP', scanSpeedLabel:'Scan speed', scanReliable:'Reliable · 1×', scanFast:'Fast · 2×', scanTurbo:'Turbo · 3×', rescanLabel:'If frames are missed', rescanBody:'With the camera, keep the carrier in view to fill missing blocks automatically. For WebP analysis, scan the same file again.', decodeModeLabel:'Fast decode', decodeModeBody:'Frames are decoded directly without waiting for animation playback.', startScan:'Analyze WebP', stopScan:'Stop', resetRestore:'Reset restore state', acceptedLabel:'Accepted', missingLabel:'Missing', invalidLabel:'Invalid frames', passLabel:'Scan passes', restoreReady:'Original file restored', downloadRestored:'Save original file', footer:'QR Tape · Animated QR / WebP · Local processing', previewUnavailable:'Preview unavailable', generatedPreviewFallbackBody:'The WebP was generated successfully. Saving and restore testing are still available.', restorePreviewFallbackBody:'Even if the image preview is unavailable, direct WebP analysis can still be used.',
+          helpCreateTitle:'Create Animated QR', helpCreate1:'Choose a file up to 1 MiB. The hard limit is 1 MiB so the QR codes stay easier to scan with a camera.', helpCreate2:'For camera restore, use “Camera-first · 1 QR / frame” at 6 fps. A single larger, lower-density QR is much easier to scan from another screen.', helpCreate3:'Save the completed Animated WebP.', helpRestoreTitle:'Restore from Animated QR', helpRestore1:'On another device, display the Animated QR, start the camera, and align the whole QR carrier with the guide. You can also select the WebP file directly.', helpRestore2:'Camera restore keeps valid data blocks even before metadata is seen. Metadata is repeated about every two seconds, so you do not need to wait for the animation to loop back to the start.', helpRestore3:'When all chunks are present, SHA-256 is checked and the file can be saved only after a match.', helpPrivacyTitle:'Privacy', helpPrivacyBody:'Files, WebP images, and decoded data are processed only inside this browser. The app makes no runtime network connection.', helpNotesTitle:'Notes', helpNoteEncryption:'The generated Animated WebP contains the source data. It is not encrypted, so anyone with the WebP can reconstruct the file.', helpNoteSize:'The Animated WebP can be much larger than the source. This tool is intended for small files.', helpNoteCodec:'The output format is Animated WebP. Camera restore scans it from another device. Direct WebP file analysis requires ImageDecoder support.', helpNoteDrops:'If a QR frame is missed, scan the same WebP again to fill only the missing blocks.', helpOffline:'CRC32 checks each data block and SHA-256 verifies the final file. This is not an erasure-correction or encryption tool.',
+          confirmTitle:'Confirm', confirmReplace:'Discard the current generated result and choose another source file?', confirmResetRestore:'Delete all chunks collected for the current restore session?', continueAction:'Continue', resetAction:'Reset',
+          fileTooLarge:'The file is too large. Please keep it at 1 MiB or below.', unsupportedWebP:'This browser cannot encode WebP images.', unsupportedDecoder:'Animated WebP frame decoding is not supported in this browser.', unsupportedDecoderBody:'Use a browser with ImageDecoder support such as Chrome or Edge.', webpOnly:'Choose an Animated WebP (.webp) file.', dependencyError:'The embedded libraries could not be loaded. Make sure you opened the built HTML.', readyToGenerate:'Ready to generate', hashing:'Verifying the source file…', compressing:'Optimizing transfer size…', recording:'Generating QR frames', finalizing:'Finalizing Animated WebP…', generationCancelled:'Animated WebP generation cancelled.', generationFailed:'Animated WebP generation failed.', noSource:'Choose a source file first.',
+          cameraPreparing:'Preparing camera…', cameraSearching:'Scanning the Animated QR…', cameraPrecollecting:'Collecting data first · waiting for metadata', cameraCollecting:'Collecting data blocks from the camera', cameraUnavailable:'Camera access is not available in this environment.', cameraError:'Could not start the camera. Check the browser camera permission.', scanPreparing:'Preparing Animated WebP…', scanSearching:'Scanning the Animated QR…', scanPrecollecting:'Collecting data first · waiting for metadata', scanCollecting:'Decoding data blocks', scanComplete:'All chunks received. Verifying the file…', scanMissing:'Some chunks are missing. Scan the same WebP again.', scanStopped:'Scan stopped. Accepted chunks are retained.', scanFailed:'An error occurred while scanning the Animated WebP.', notOpticalVideo:'No Optical File Animated QR metadata was detected.', hashMismatch:'SHA-256 did not match. The reconstructed data is damaged.', verified:'SHA-256 matched', resetDone:'Restore state reset.', savedVideo:'Animated WebP saved.', savedFile:'Original file saved.', libraryLoading:'Preparing restore support…', libraryReady:'Ready',
+          videoFileLabel:'Animated WebP', sourceFileLabel:'Source file', formatLabel:'Format', sizeLabel:'Size'
+        }
+      };
+
+      const $ = selector => document.querySelector(selector);
+      const $$ = selector => Array.from(document.querySelectorAll(selector));
+      const toast = $('#toast');
+      let toastTimer = 0;
+      let language = readStorage(`${APP_CONFIG.slug}:language`) || detectLanguage();
+      let QRCodeLib = null;
+      let jsQRLib = null;
+      let barcodeDetector = null;
+      let nativeQrDetection = false;
+      let jsqrWorkers = [];
+      let jsqrWorkerUrl = '';
+      let jsqrWorkerRequestId = 0;
+      const jsqrWorkerPending = new Map();
+      let librariesReady = false;
+      let restoreUiPending = false;
+      let lastGenerateUiAt = 0;
+      const qrScratchCanvases = Array.from({ length: 4 }, () => document.createElement('canvas'));
+      const scanFullCanvas = document.createElement('canvas');
+      const scanTileCanvases = Array.from({ length: 4 }, () => document.createElement('canvas'));
+      let sourceFile = null;
+      let generatedBlob = null;
+      let generatedUrl = '';
+      let generatedFilename = '';
+      let generationAbort = false;
+            let restoreVideoFile = null;
+      let restoreVideoUrl = '';
+      let activeDecoder = null;
+      let scanning = false;
+      let scanToken = 0;
+      let cameraStream = null;
+      let cameraRunning = false;
+      let cameraScanBusy = false;
+      let cameraFrameHandle = 0;
+      let cameraTrack = null;
+      let exposureApplyTimer = 0;
+      const cameraFrameCanvas = document.createElement('canvas');
+      cameraFrameCanvas.width = FRAME_SIZE;
+      cameraFrameCanvas.height = FRAME_SIZE;
+      let restoredBlob = null;
+      let restoredUrl = '';
+      const restoreState = { meta: null, chunks: [], accepted: 0, invalid: 0, passes: 0, endSeen: false, provisionalSession: '', provisionalChunks: new Map() };
+
+      const AppConfirm = (() => {
+        const dialog = $('#appConfirmDialog'), title = $('#appConfirmTitle'), message = $('#appConfirmMessage');
+        const closeButton = $('#appConfirmClose'), cancelButton = $('#appConfirmCancel'), okButton = $('#appConfirmOk');
+        let resolver = null, restoreFocus = null;
+        function finish(result) {
+          if (!dialog.open) return;
+          const current = resolver; resolver = null; dialog.close();
+          if (restoreFocus instanceof HTMLElement && restoreFocus.isConnected) restoreFocus.focus({ preventScroll: true });
+          restoreFocus = null; if (current) current(result);
+        }
+        function ask({ title: heading, message: body, confirmLabel, cancelLabel, tone = 'default' } = {}) {
+          if (dialog.open) finish(false);
+          title.textContent = heading || t('confirmTitle'); message.textContent = body || '';
+          cancelButton.textContent = cancelLabel || t('cancel'); okButton.textContent = confirmLabel || t('continueAction');
+          okButton.classList.toggle('danger', tone === 'danger'); okButton.classList.toggle('primary', tone !== 'danger');
+          restoreFocus = document.activeElement;
+          return new Promise(resolve => { resolver = resolve; dialog.showModal(); requestAnimationFrame(() => cancelButton.focus({ preventScroll: true })); });
+        }
+        closeButton.addEventListener('click', () => finish(false)); cancelButton.addEventListener('click', () => finish(false)); okButton.addEventListener('click', () => finish(true));
+        dialog.addEventListener('cancel', event => { event.preventDefault(); finish(false); });
+        dialog.addEventListener('click', event => { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) finish(false); });
+        return Object.freeze({ ask });
+      })();
+      window.AppConfirm = AppConfirm;
+
+      function readStorage(key) { try { return localStorage.getItem(key); } catch { return null; } }
+      function writeStorage(key, value) { try { localStorage.setItem(key, value); } catch {} }
+      function detectLanguage() { if (APP_CONFIG.defaultLanguage === 'ja' || APP_CONFIG.defaultLanguage === 'en') return APP_CONFIG.defaultLanguage; return (navigator.language || '').toLowerCase().startsWith('ja') ? 'ja' : 'en'; }
+      function t(key) { return translations[language]?.[key] ?? translations.en[key] ?? key; }
+      function showToast(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1900); }
+      function formatBytes(bytes) { if (!Number.isFinite(bytes)) return '—'; if (bytes < 1024) return `${bytes} B`; const units = ['KiB','MiB','GiB']; let value = bytes; let unit = -1; do { value /= 1024; unit += 1; } while (value >= 1024 && unit < units.length - 1); return `${value >= 10 ? value.toFixed(1) : value.toFixed(2)} ${units[unit]}`; }
+      function formatDuration(seconds) { if (!Number.isFinite(seconds)) return '—'; if (seconds < 60) return `${Math.max(1, Math.round(seconds))} s`; const m = Math.floor(seconds / 60), s = Math.round(seconds % 60); return `${m}:${String(s).padStart(2,'0')}`; }
+      function safeFilename(name) { return (name || 'file').replace(/[\\/:*?"<>|\u0000-\u001F]/g, '_').replace(/\s+/g, ' ').trim().slice(0, 180) || 'file'; }
+      function currentTiles() { return Number(document.querySelector('input[name="tileMode"]:checked')?.value || 1); }
+      function currentFps() { return Number($('#fpsSelect').value || 8); }
+      function currentChunkBytes() { return currentTiles() === 4 ? QR_DATA_CHUNK_BYTES_TILED : QR_DATA_CHUNK_BYTES; }
+      function configureCreateOptions() { updateEstimates(); }
+      function updateEstimates() {
+        if (!sourceFile) { $('#chunkEstimate').textContent='—'; $('#frameEstimate').textContent='—'; $('#durationEstimate').textContent='—'; $('#outputEstimate').textContent='—'; $('#sourceSizeWarning').hidden=true; return; }
+        const tiles=currentTiles(), chunkBytes=currentChunkBytes(), total=Math.max(1,Math.ceil(sourceFile.size/chunkBytes)), dataFrames=Math.ceil(total/tiles), metaRepeats=Math.floor(Math.max(0,dataFrames-1)/META_REPEAT_DATA_FRAMES), frames=dataFrames+3+metaRepeats, fps=currentFps();
+        $('#chunkEstimate').textContent=total.toLocaleString(language); $('#frameEstimate').textContent=frames.toLocaleString(language); $('#durationEstimate').textContent=formatDuration(frames/fps);
+        $('#outputEstimate').textContent=frames < 120 ? '≈ 2–12 MiB' : frames < 500 ? '≈ 8–50 MiB' : '50 MiB+';
+        $('#sourceSizeWarning').hidden = sourceFile.size < 512*1024;
+      }
+      function applyLanguage() {
+        document.documentElement.lang = language;
+        $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+        $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+        $$('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel)); });
+        $('#languageButton').textContent = language === 'ja' ? 'EN' : '日本語';
+        $('#languageButton').setAttribute('aria-label', language === 'ja' ? '英語に切り替え' : 'Switch to Japanese');
+        document.title = APP_CONFIG.name;
+        $('#brandName').textContent = APP_CONFIG.name;
+        $('#footerName').textContent = APP_CONFIG.name;
+        updateSourceCard(); updateVideoCard(); updateRestoreStatus(); updateEstimates();
+      }
+      function setMode(mode) {
+        const create = mode === 'create';
+        if (create && cameraRunning) stopCamera({ keepStatus:true });
+        $('#createTab').setAttribute('aria-selected', String(create)); $('#restoreTab').setAttribute('aria-selected', String(!create));
+        $('#createPanel').hidden = !create; $('#restorePanel').hidden = create;
+        if (!create && $('#restorePanel').hidden === false) requestAnimationFrame(() => $('#restorePanel').scrollIntoView({ block: 'nearest' }));
+      }
+      function makeDropZone(zone, input, handler) {
+        ['dragenter','dragover'].forEach(type => zone.addEventListener(type, e => { e.preventDefault(); zone.classList.add('dragover'); }));
+        ['dragleave','drop'].forEach(type => zone.addEventListener(type, e => { e.preventDefault(); zone.classList.remove('dragover'); }));
+        zone.addEventListener('drop', e => { const file = e.dataTransfer?.files?.[0]; if (file) handler(file); });
+        input.addEventListener('change', () => { const file = input.files?.[0]; if (file) handler(file); input.value = ''; });
+      }
+      function updateSourceCard() {
+        $('#sourceDropZone').hidden = Boolean(sourceFile);
+        $('#sourceFileCard').hidden = !sourceFile;
+        if (sourceFile) { $('#sourceFileName').textContent = sourceFile.name; $('#sourceFileMeta').textContent = `${formatBytes(sourceFile.size)} · ${sourceFile.type || 'application/octet-stream'}`; }
+        $('#generateButton').disabled = !sourceFile || !librariesReady;
+      }
+      function updateRestoreControls() {
+        $('#scanButton').disabled = !restoreVideoFile || !librariesReady || scanning || cameraRunning;
+        $('#startCameraButton').disabled = !librariesReady || cameraRunning || scanning;
+        $('#stopCameraButton').hidden = !cameraRunning;
+        $('#resetRestoreButton').disabled = !restoreState.meta && restoreState.accepted === 0;
+      }
+      function updateVideoCard() {
+        $('#videoDropZone').hidden = Boolean(restoreVideoFile);
+        $('#videoFileCard').hidden = !restoreVideoFile;
+        if (restoreVideoFile) { $('#videoFileName').textContent = restoreVideoFile.name; $('#videoFileMeta').textContent = `${formatBytes(restoreVideoFile.size)} · ${restoreVideoFile.type || 'image/webp'}`; }
+        updateRestoreControls();
+      }
+      async function selectSource(file) {
+        if (file.size > MAX_SOURCE_BYTES) { showToast(t('fileTooLarge')); return; }
+        if (generatedBlob) {
+          const ok = await AppConfirm.ask({ title:t('confirmTitle'), message:t('confirmReplace'), confirmLabel:t('continueAction'), cancelLabel:t('cancel'), tone:'danger' });
+          if (!ok) return;
+        }
+        sourceFile = file; clearGeneratedResult(); updateSourceCard(); updateEstimates();
+      }
+      async function selectRestoreVideo(file, { preserve = false } = {}) {
+        if (!file || (!/\.webp$/i.test(file.name) && file.type !== 'image/webp')) { showToast(t('webpOnly')); return false; }
+        if (!preserve && restoreState.accepted > 0) { const ok=await AppConfirm.ask({title:t('confirmTitle'),message:t('confirmResetRestore'),confirmLabel:t('resetAction'),cancelLabel:t('cancel'),tone:'danger'}); if(!ok) return false; resetRestoreState(false); }
+        if (restoreVideoUrl) URL.revokeObjectURL(restoreVideoUrl);
+        restoreVideoFile=file; restoreVideoUrl=URL.createObjectURL(file); const img=$('#restoreVideo'); setPreviewState('restore','none'); $('#restoreVideoWrap').hidden=false; img.src=restoreVideoUrl;
+        updateVideoCard(); $('#restoreStatus').hidden=false; $('#restoreStatusTitle').textContent=t('scanPreparing'); $('#restoreStatusText').textContent=file.name; return true;
+      }
+      function setPreviewState(kind, state) {
+        const image = kind === 'generated' ? $('#generatedVideo') : $('#restoreVideo');
+        const fallback = kind === 'generated' ? $('#generatedPreviewFallback') : $('#restorePreviewFallback');
+        image.hidden = state !== 'image';
+        fallback.hidden = state !== 'fallback';
+      }
+      function attachPreviewHandlers(kind) {
+        const image = kind === 'generated' ? $('#generatedVideo') : $('#restoreVideo');
+        image.onload = () => setPreviewState(kind, 'image');
+        image.onerror = () => setPreviewState(kind, 'fallback');
+      }
+      function clearGeneratedResult() {
+        if (generatedUrl) URL.revokeObjectURL(generatedUrl);
+        generatedBlob=null; generatedUrl=''; generatedFilename=''; $('#createResult').hidden=true; $('#generatedVideo').removeAttribute('src'); setPreviewState('generated','none');
+      }
+      function base64UrlEncode(bytes) {
+        let binary = ''; for (let offset = 0; offset < bytes.length; offset += 0x8000) binary += String.fromCharCode(...bytes.subarray(offset, Math.min(bytes.length, offset + 0x8000)));
+        return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+      }
+      function base64UrlDecode(text) {
+        const normalized = text.replace(/-/g,'+').replace(/_/g,'/'); const padded = normalized + '='.repeat((4 - normalized.length % 4) % 4);
+        const binary = atob(padded); const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i); return bytes;
+      }
+      function utf8ToBase64Url(text) { return base64UrlEncode(new TextEncoder().encode(text)); }
+      function base64UrlToUtf8(text) { return new TextDecoder().decode(base64UrlDecode(text)); }
+      async function sha256Hex(bytes) { const digest = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2,'0')).join(''); }
+      const crcTable = (() => { const table = new Uint32Array(256); for (let n = 0; n < 256; n += 1) { let c = n; for (let k = 0; k < 8; k += 1) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1); table[n] = c >>> 0; } return table; })();
+      function crc32(bytes) { let crc = 0xffffffff; for (let i = 0; i < bytes.length; i += 1) crc = crcTable[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8); return (crc ^ 0xffffffff) >>> 0; }
+      function hex8(value) { return value.toString(16).padStart(8,'0'); }
+      function randomSession() { const bytes = new Uint8Array(7); crypto.getRandomValues(bytes); return Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('').toUpperCase(); }
+      function hexToBytes(hex) { const out = new Uint8Array(hex.length / 2); for (let i = 0; i < out.length; i += 1) out[i] = parseInt(hex.slice(i * 2, i * 2 + 2),16); return out; }
+      function bytesToHex(bytes) { return Array.from(bytes,b => b.toString(16).padStart(2,'0')).join('').toUpperCase(); }
+      function writeU16(bytes,offset,value) { bytes[offset] = (value >>> 8) & 0xff; bytes[offset + 1] = value & 0xff; }
+      function readU16(bytes,offset) { return (bytes[offset] << 8) | bytes[offset + 1]; }
+      function writeU32(bytes,offset,value) { value >>>= 0; bytes[offset] = value >>> 24; bytes[offset + 1] = (value >>> 16) & 0xff; bytes[offset + 2] = (value >>> 8) & 0xff; bytes[offset + 3] = value & 0xff; }
+      function readU32(bytes,offset) { return (((bytes[offset] << 24) >>> 0) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0; }
+      const BASE45_CHARSET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+      const BASE45_LOOKUP = (() => { const map = new Map(); for (let i = 0; i < BASE45_CHARSET.length; i += 1) map.set(BASE45_CHARSET[i], i); return map; })();
+      function base45Encode(bytes) {
+        let out = '';
+        for (let i = 0; i < bytes.length; i += 2) {
+          if (i + 1 < bytes.length) {
+            let value = bytes[i] * 256 + bytes[i + 1];
+            const c = value % 45; value = Math.floor(value / 45);
+            const d = value % 45; const e = Math.floor(value / 45);
+            out += BASE45_CHARSET[c] + BASE45_CHARSET[d] + BASE45_CHARSET[e];
+          } else {
+            const value = bytes[i];
+            out += BASE45_CHARSET[value % 45] + BASE45_CHARSET[Math.floor(value / 45)];
+          }
+        }
+        return out;
+      }
+      function base45Decode(text) {
+        if (text === '') return new Uint8Array(0);
+        if (!text || text.length % 3 === 1) throw new Error('Invalid Base45 length');
+        const out = [];
+        for (let i = 0; i < text.length;) {
+          const remaining = text.length - i;
+          const c = BASE45_LOOKUP.get(text[i]); const d = BASE45_LOOKUP.get(text[i + 1]);
+          if (c == null || d == null) throw new Error('Invalid Base45 character');
+          if (remaining >= 3) {
+            const e = BASE45_LOOKUP.get(text[i + 2]); if (e == null) throw new Error('Invalid Base45 character');
+            const value = c + d * 45 + e * 2025; if (value > 65535) throw new Error('Invalid Base45 value');
+            out.push(Math.floor(value / 256), value % 256); i += 3;
+          } else {
+            const value = c + d * 45; if (value > 255) throw new Error('Invalid Base45 value');
+            out.push(value); i += 2;
+          }
+        }
+        return new Uint8Array(out);
+      }
+      async function gzipBytes(bytes) { const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip')); return new Uint8Array(await new Response(stream).arrayBuffer()); }
+      async function gunzipBytes(bytes) { const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')); return new Uint8Array(await new Response(stream).arrayBuffer()); }
+      async function maybeCompress(bytes) {
+        if (!('CompressionStream' in window) || !('DecompressionStream' in window) || bytes.length < 4096) return { bytes, compression:'none' };
+        try {
+          const compressed = await gzipBytes(bytes);
+          if (compressed.length + 1024 < bytes.length * 0.95) return { bytes:compressed, compression:'gzip' };
+        } catch (error) { console.info('Gzip compression skipped.', error); }
+        return { bytes, compression:'none' };
+      }
+      function createMetaPayload(meta) {
+        const nameBytes = new TextEncoder().encode(meta.name || 'file');
+        const mimeBytes = new TextEncoder().encode(meta.mime || '');
+        const payload = new Uint8Array(59 + nameBytes.length + mimeBytes.length);
+        let o = 0;
+        payload[o++] = 1;
+        payload.set(hexToBytes(meta.session), o); o += 7;
+        writeU16(payload,o,meta.total); o += 2;
+        writeU16(payload,o,meta.chunkSize); o += 2;
+        payload[o++] = meta.tiles;
+        payload[o++] = meta.fps;
+        writeU32(payload,o,meta.size); o += 4;
+        writeU32(payload,o,meta.transportSize ?? meta.size); o += 4;
+        payload[o++] = meta.compression === 'gzip' ? 1 : 0;
+        payload.set(hexToBytes(meta.sha256),o); o += 32;
+        writeU16(payload,o,nameBytes.length); o += 2;
+        writeU16(payload,o,mimeBytes.length); o += 2;
+        payload.set(nameBytes,o); o += nameBytes.length;
+        payload.set(mimeBytes,o);
+        return COMPACT_META_PREFIX + base45Encode(payload);
+      }
+      function createDataPayload(session, index, bytes) { return `BK2D${session}${index.toString(36).toUpperCase().padStart(4,'0')}${hex8(crc32(bytes)).toUpperCase()}${base45Encode(bytes)}`; }
+      function createEndPayload(meta) { return [PROTOCOL,'E',meta.session,meta.total,meta.sha256].join('|'); }
+      function parsePayload(text) {
+        if (!text) return null;
+        if (text.startsWith(COMPACT_META_PREFIX)) {
+          try {
+            const bytes = base45Decode(text.slice(COMPACT_META_PREFIX.length));
+            if (bytes.length < 59 || bytes[0] !== 1) return null;
+            let o = 1;
+            const session = bytesToHex(bytes.subarray(o,o+7)); o += 7;
+            const total = readU16(bytes,o); o += 2;
+            const chunkSize = readU16(bytes,o); o += 2;
+            const tiles = bytes[o++];
+            const fps = bytes[o++];
+            const size = readU32(bytes,o); o += 4;
+            const transportSize = readU32(bytes,o); o += 4;
+            const compression = bytes[o++] & 1 ? 'gzip' : 'none';
+            const sha256 = bytesToHex(bytes.subarray(o,o+32)).toLowerCase(); o += 32;
+            const nameLen = readU16(bytes,o); o += 2;
+            const mimeLen = readU16(bytes,o); o += 2;
+            if (o + nameLen + mimeLen !== bytes.length) return null;
+            const decoder = new TextDecoder();
+            const name = decoder.decode(bytes.subarray(o,o+nameLen)); o += nameLen;
+            const mime = decoder.decode(bytes.subarray(o,o+mimeLen));
+            const meta = { type:'M', session, total, chunkSize, tiles, fps, size, sha256, name, mime, compression, transportSize, carrier:'qr', gridSize:0 };
+            const expectedTotal = Math.max(1, Math.ceil(meta.transportSize / meta.chunkSize));
+            if (!/^[0-9A-F]{14}$/.test(session) || !Number.isInteger(total) || total < 1 || total > 20000 || !Number.isInteger(chunkSize) || chunkSize < 1 || chunkSize > MAX_SUPPORTED_CHUNK_BYTES || expectedTotal !== total || ![1,4].includes(tiles) || !Number.isFinite(size) || size < 0 || size > MAX_SOURCE_BYTES || !Number.isFinite(transportSize) || transportSize < 0 || transportSize > MAX_SOURCE_BYTES + 65536 || (compression === 'none' && transportSize !== size) || !/^[0-9a-f]{64}$/.test(sha256)) return null;
+            return meta;
+          } catch { return null; }
+        }
+        if (text.startsWith('BK2D') && text.length >= 30) {
+          try {
+            const session = text.slice(4,18);
+            const index = parseInt(text.slice(18,22),36);
+            const crc = text.slice(22,30);
+            if (!/^[0-9A-F]{14}$/.test(session) || !Number.isInteger(index) || !/^[0-9A-F]{8}$/.test(crc)) return null;
+            return { type:'D', session, index, crc:crc.toLowerCase(), data45:text.slice(30) };
+          } catch { return null; }
+        }
+        if (!text.startsWith(`${PROTOCOL}|`)) return null;
+        const parts = text.split('|');
+        if (parts[1] === 'M' && parts.length >= 11) {
+          const meta = { type:'M', session:parts[2], total:Number(parts[3]), chunkSize:Number(parts[4]), tiles:Number(parts[5]), fps:Number(parts[6]), size:Number(parts[7]), sha256:parts[8], name:base64UrlToUtf8(parts[9]), mime:base64UrlToUtf8(parts[10]), compression:parts[11] || 'none', transportSize:Number(parts[12] || parts[7]), carrier:parts[13] || 'qr', gridSize:Number(parts[14] || 0) };
+          const expectedTotal = Math.max(1, Math.ceil(meta.transportSize / meta.chunkSize));
+          const validCarrier = meta.carrier === 'qr' && [1,4].includes(meta.tiles) && meta.gridSize === 0 && meta.chunkSize <= MAX_SUPPORTED_CHUNK_BYTES;
+          if (!meta.session || !Number.isInteger(meta.total) || meta.total < 1 || meta.total > 20000 || !Number.isInteger(meta.chunkSize) || meta.chunkSize < 1 || meta.chunkSize > MAX_SUPPORTED_CHUNK_BYTES || meta.total !== expectedTotal || !Number.isInteger(meta.tiles) || !validCarrier || !Number.isFinite(meta.size) || meta.size < 0 || meta.size > MAX_SOURCE_BYTES || !Number.isFinite(meta.transportSize) || meta.transportSize < 0 || meta.transportSize > MAX_SOURCE_BYTES + 65536 || !['none','gzip'].includes(meta.compression) || (meta.compression === 'none' && meta.transportSize !== meta.size) || !/^[0-9a-f]{64}$/i.test(meta.sha256)) return null;
+          return meta;
+        }
+        if (parts[1] === 'D' && parts.length >= 6) return { type:'D', session:parts[2], index:Number(parts[3]), crc:parts[4], data:parts[5] };
+        if (parts[1] === 'E' && parts.length >= 5) return { type:'E', session:parts[2], total:Number(parts[3]), sha256:parts[4] };
+        return null;
+      }
+      function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+      function drawBase(canvas, subtitle = '') {
+        const ctx = canvas.getContext('2d'); ctx.fillStyle=CARRIER_LIGHT; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle='#16624f'; ctx.font='700 24px system-ui,sans-serif'; ctx.textAlign='left'; ctx.fillText('Optical File',24,34);
+        if (subtitle) { ctx.fillStyle='#5d625d'; ctx.font='600 15px system-ui,sans-serif'; ctx.textAlign='right'; ctx.fillText(subtitle,canvas.width-24,34); }
+      }
+      async function qrToCanvas(canvas, text, width, margin = 2, errorCorrectionLevel = 'M') {
+        if (canvas.width !== width) canvas.width=width; if (canvas.height !== width) canvas.height=width;
+        const input=(text.startsWith('BK2D') || text.startsWith(COMPACT_META_PREFIX)) ? [{data:text,mode:'alphanumeric'}] : text;
+        await QRCodeLib.toCanvas(canvas,input,{errorCorrectionLevel,margin,width,color:{dark:CARRIER_DARK,light:CARRIER_LIGHT}});
+      }
+      async function drawFullQr(canvas,payload,label) {
+        canvas.width=FRAME_SIZE; canvas.height=FRAME_SIZE; drawBase(canvas,label); const qr=qrScratchCanvases[0]; await qrToCanvas(qr,payload,QR_FULL_SIZE,4,'M'); canvas.getContext('2d').drawImage(qr,(FRAME_SIZE-QR_FULL_SIZE)/2,78,QR_FULL_SIZE,QR_FULL_SIZE);
+      }
+      async function drawDataFrame(canvas,payloads,frameNumber,frameTotal,tiles) {
+        canvas.width=FRAME_SIZE; canvas.height=FRAME_SIZE; const ctx=canvas.getContext('2d'); ctx.fillStyle=CARRIER_LIGHT; ctx.fillRect(0,0,FRAME_SIZE,FRAME_SIZE);
+        if (tiles===1) { const qr=qrScratchCanvases[0]; await qrToCanvas(qr,payloads[0],QR_FULL_SIZE,4,'M'); ctx.drawImage(qr,(FRAME_SIZE-QR_FULL_SIZE)/2,62,QR_FULL_SIZE,QR_FULL_SIZE); }
+        else { const pos=[[35,35],[465,35],[35,465],[465,465]]; await Promise.all(payloads.map((payload,i)=>qrToCanvas(qrScratchCanvases[i],payload,QR_TILE_SIZE,4,'M'))); for(let i=0;i<payloads.length;i++) ctx.drawImage(qrScratchCanvases[i],pos[i][0],pos[i][1],QR_TILE_SIZE,QR_TILE_SIZE); }
+        ctx.fillStyle='#666963'; ctx.font='600 15px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillText(`${frameNumber}/${frameTotal}`,FRAME_SIZE/2,884);
+      }
+      function canvasToWebP(canvas, quality = 1) { return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('WebP encoding failed')),'image/webp',quality)); }
+      function readU32LE(bytes,offset){ return (bytes[offset]|(bytes[offset+1]<<8)|(bytes[offset+2]<<16)|(bytes[offset+3]<<24))>>>0; }
+      function writeU24LE(bytes,offset,value){ bytes[offset]=value&255; bytes[offset+1]=(value>>>8)&255; bytes[offset+2]=(value>>>16)&255; }
+      function writeU32LE(bytes,offset,value){ bytes[offset]=value&255; bytes[offset+1]=(value>>>8)&255; bytes[offset+2]=(value>>>16)&255; bytes[offset+3]=(value>>>24)&255; }
+      function fourCC(text){ return Uint8Array.from([...text].map(c=>c.charCodeAt(0))); }
+      function concatBytes(parts){ const total=parts.reduce((n,p)=>n+p.length,0),out=new Uint8Array(total); let o=0; for(const p of parts){out.set(p,o);o+=p.length;} return out; }
+      function riffChunk(id,data){ const padded=data.length+(data.length&1),out=new Uint8Array(8+padded); out.set(fourCC(id),0); writeU32LE(out,4,data.length); out.set(data,8); return out; }
+      async function extractWebPFrameChunks(blob){
+        const bytes=new Uint8Array(await blob.arrayBuffer()); if(String.fromCharCode(...bytes.subarray(0,4))!=='RIFF'||String.fromCharCode(...bytes.subarray(8,12))!=='WEBP') throw new Error('Unexpected WebP frame');
+        const parts=[]; let p=12; while(p+8<=bytes.length){ const id=String.fromCharCode(...bytes.subarray(p,p+4)),size=readU32LE(bytes,p+4),end=p+8+size+(size&1); if(['ALPH','VP8 ','VP8L'].includes(id)) parts.push(bytes.slice(p,end)); p=end; }
+        if(!parts.some(part=>String.fromCharCode(...part.subarray(0,4))==='VP8 '||String.fromCharCode(...part.subarray(0,4))==='VP8L')) throw new Error('WebP frame payload missing'); return concatBytes(parts);
+      }
+      async function buildAnimatedWebP(frameBlobs,width,height,durations){
+        const vp8x=new Uint8Array(10); vp8x[0]=0x02; writeU24LE(vp8x,4,width-1); writeU24LE(vp8x,7,height-1);
+        const anim=new Uint8Array([255,255,255,255,0,0]); const chunks=[riffChunk('VP8X',vp8x),riffChunk('ANIM',anim)];
+        for(let i=0;i<frameBlobs.length;i++){ const payload=await extractWebPFrameChunks(frameBlobs[i]); const header=new Uint8Array(16); writeU24LE(header,6,width-1); writeU24LE(header,9,height-1); writeU24LE(header,12,Math.max(20,Math.min(0xffffff,Math.round(durations[i]||100)))); header[15]=2; chunks.push(riffChunk('ANMF',concatBytes([header,payload]))); }
+        const body=concatBytes([fourCC('WEBP'),...chunks]),out=new Uint8Array(8+body.length); out.set(fourCC('RIFF'),0); writeU32LE(out,4,body.length); out.set(body,8); return new Blob([out],{type:'image/webp'});
+      }
+      function setGenerateProgress(percent,title,text){ $('#generateStatus').hidden=false; $('#generateStatusTitle').textContent=title; $('#generateStatusValue').textContent=`${Math.round(percent)}%`; $('#generateProgress').style.width=`${Math.max(0,Math.min(100,percent))}%`; $('#generateStatusText').textContent=text||''; }
+      function setGenerateProgressThrottled(percent,title,text,force=false){ const now=performance.now(); if(!force&&now-lastGenerateUiAt<100)return; lastGenerateUiAt=now; setGenerateProgress(percent,title,text); }
+      async function generateVideo(){
+        if(!sourceFile||!librariesReady){showToast(t('noSource'));return;} clearGeneratedResult(); generationAbort=false; $('#generateButton').disabled=true; $('#cancelGenerateButton').hidden=false; $('#replaceSourceButton').disabled=true; $('#fpsSelect').disabled=true; $$('input[name="tileMode"]').forEach(input=>input.disabled=true);
+        try{
+          if(!HTMLCanvasElement.prototype.toBlob) throw new Error(t('unsupportedWebP'));
+          setGenerateProgress(2,t('hashing'),sourceFile.name); const buffer=await sourceFile.arrayBuffer(),sourceBytes=new Uint8Array(buffer),hash=await sha256Hex(buffer);
+          setGenerateProgress(5,t('compressing'),sourceFile.name); const packed=await maybeCompress(sourceBytes),bytes=packed.bytes,tiles=currentTiles(),fps=currentFps(),chunkSize=currentChunkBytes(),total=Math.max(1,Math.ceil(bytes.length/chunkSize));
+          const meta={session:randomSession(),total,chunkSize,tiles,fps,size:sourceBytes.length,transportSize:bytes.length,compression:packed.compression,carrier:'qr',gridSize:0,sha256:hash,name:sourceFile.name,mime:sourceFile.type||'application/octet-stream'};
+          const canvas=$('#qrPreviewCanvas'); canvas.width=FRAME_SIZE; canvas.height=FRAME_SIZE; const frames=[],durations=[],frameMs=1000/fps;
+          const metaPayload = createMetaPayload(meta);
+          await drawFullQr(canvas,metaPayload,'META'); frames.push(await canvasToWebP(canvas,1)); durations.push(500);
+          const dataFrames=Math.ceil(total/tiles);
+          for(let f=0;f<dataFrames;f++){
+            if(generationAbort) throw new DOMException('Cancelled','AbortError'); const payloads=[];
+            for(let j=0;j<tiles;j++){ const index=f*tiles+j; if(index>=total) break; const start=index*chunkSize,end=Math.min(bytes.length,start+chunkSize); payloads.push(createDataPayload(meta.session,index,bytes.subarray(start,end))); }
+            await drawDataFrame(canvas,payloads,f+1,dataFrames,tiles); frames.push(await canvasToWebP(canvas,1)); durations.push(frameMs);
+            if ((f + 1) % META_REPEAT_DATA_FRAMES === 0 && f + 1 < dataFrames) {
+              await drawFullQr(canvas,metaPayload,'META'); frames.push(await canvasToWebP(canvas,1)); durations.push(300);
+            }
+            setGenerateProgressThrottled(8+((f+1)/dataFrames)*82,t('recording'),`${f+1} / ${dataFrames}`,f+1===dataFrames); await new Promise(requestAnimationFrame);
+          }
+          await drawFullQr(canvas,metaPayload,'META'); frames.push(await canvasToWebP(canvas,1)); durations.push(350);
+          await drawFullQr(canvas,createEndPayload(meta),'END'); frames.push(await canvasToWebP(canvas,1)); durations.push(350);
+          setGenerateProgress(93,t('finalizing'),`${frames.length} frames`); generatedBlob=await buildAnimatedWebP(frames,FRAME_SIZE,FRAME_SIZE,durations); generatedUrl=URL.createObjectURL(generatedBlob); generatedFilename=`${safeFilename(sourceFile.name)}.qr-tape.webp`; setPreviewState('generated','none'); $('#generatedVideo').src=generatedUrl; $('#videoResultMeta').textContent=`${generatedFilename} · ${formatBytes(generatedBlob.size)} · ${frames.length} frames · SHA-256 ${hash.slice(0,12)}…`; $('#createResult').hidden=false; setGenerateProgress(100,t('videoReady'),generatedFilename); $('#createResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+        }catch(error){ if(error?.name==='AbortError'){setGenerateProgress(0,t('generationCancelled'),'');} else {console.error(error);setGenerateProgress(0,t('generationFailed'),error?.message||'');} }
+        finally{$('#generateButton').disabled=!sourceFile||!librariesReady; $('#cancelGenerateButton').hidden=true; $('#replaceSourceButton').disabled=false; $('#fpsSelect').disabled=false; $$('input[name="tileMode"]').forEach(input=>input.disabled=false); generationAbort=false;}
+      }
+      function cancelGeneration(){ generationAbort=true; }
+      function downloadBlob(blob,filename){ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000); }
+      function resetRestoreState(showMessage = true) {
+        scanToken += 1; scanning = false; restoreState.meta = null; restoreState.chunks = []; restoreState.accepted = 0; restoreState.invalid = 0; restoreState.passes = 0; restoreState.endSeen = false; restoreState.provisionalSession = ''; restoreState.provisionalChunks = new Map();
+        if (restoredUrl) URL.revokeObjectURL(restoredUrl); restoredBlob = null; restoredUrl = ''; $('#restoreResult').hidden = true; $('#restoreProgress').style.width = '0%'; $('#restoreStatusValue').textContent = '0%'; $('#acceptedCount').textContent = '0'; $('#missingCount').textContent = '—'; $('#invalidCount').textContent = '0'; $('#scanPassCount').textContent = '0'; updateRestoreControls();
+        configureScanSpeedOptions();
+        if (showMessage) showToast(t('resetDone'));
+      }
+      function updateRestoreStatus() {
+        const meta = restoreState.meta; const total = meta?.total || 0; const provisionalCount = restoreState.provisionalChunks?.size || 0; const visibleAccepted = meta ? restoreState.accepted : provisionalCount; const percent = total ? restoreState.accepted / total * 100 : 0;
+        $('#restoreProgress').style.width = `${percent}%`; $('#restoreStatusValue').textContent = `${Math.round(percent)}%`; $('#acceptedCount').textContent = visibleAccepted.toLocaleString(language); $('#missingCount').textContent = total ? Math.max(0,total - restoreState.accepted).toLocaleString(language) : '—'; $('#invalidCount').textContent = restoreState.invalid.toLocaleString(language); $('#scanPassCount').textContent = restoreState.passes.toLocaleString(language);
+      }
+      function scheduleRestoreStatus(force = false) {
+        if (force) { restoreUiPending = false; updateRestoreStatus(); return; }
+        if (restoreUiPending) return;
+        restoreUiPending = true;
+        requestAnimationFrame(() => { restoreUiPending = false; updateRestoreStatus(); });
+      }
+      function decodeAndValidateDataPayload(payload) {
+        try {
+          const bytes = payload.dataBytes instanceof Uint8Array ? payload.dataBytes : (payload.data45 != null ? base45Decode(payload.data45) : base64UrlDecode(payload.data));
+          if (hex8(crc32(bytes)) !== payload.crc.toLowerCase()) return null;
+          return bytes;
+        } catch { return null; }
+      }
+      function mergeProvisionalChunks(meta) {
+        if (!restoreState.provisionalSession || restoreState.provisionalSession !== meta.session || !restoreState.provisionalChunks.size) return;
+        for (const [index, bytes] of restoreState.provisionalChunks) {
+          if (index >= 0 && index < meta.total && !restoreState.chunks[index]) {
+            restoreState.chunks[index] = bytes;
+            restoreState.accepted += 1;
+          }
+        }
+        restoreState.provisionalChunks.clear();
+        restoreState.provisionalSession = '';
+      }
+      function acceptPayload(payload) {
+        if (!payload) return false;
+        if (payload.type === 'M') {
+          if (!restoreState.meta) {
+            restoreState.meta = payload;
+            restoreState.chunks = new Array(payload.total);
+            mergeProvisionalChunks(payload);
+            $('#restoreStatusTitle').textContent = cameraRunning ? t('cameraCollecting') : t('scanCollecting');
+            configureScanSpeedOptions(); updateRestoreControls();
+          } else if (restoreState.meta.session !== payload.session) return false;
+          scheduleRestoreStatus(true); return true;
+        }
+        if (payload.type === 'E') {
+          if (restoreState.meta && payload.session === restoreState.meta.session) { restoreState.endSeen = true; return true; }
+          return false;
+        }
+        if (payload.type !== 'D' || !Number.isInteger(payload.index) || payload.index < 0) return false;
+        if (!restoreState.meta) {
+          if (!restoreState.provisionalSession) restoreState.provisionalSession = payload.session;
+          if (payload.session !== restoreState.provisionalSession) return false;
+          if (restoreState.provisionalChunks.has(payload.index)) return true;
+          const bytes = decodeAndValidateDataPayload(payload);
+          if (!bytes) { restoreState.invalid += 1; scheduleRestoreStatus(); return false; }
+          restoreState.provisionalChunks.set(payload.index, bytes);
+          $('#restoreStatusTitle').textContent = cameraRunning ? t('cameraPrecollecting') : t('scanPrecollecting');
+          $('#restoreStatusText').textContent = `${restoreState.provisionalChunks.size.toLocaleString(language)} ${t('acceptedLabel')}`;
+          scheduleRestoreStatus();
+          return true;
+        }
+        if (payload.session !== restoreState.meta.session || payload.index >= restoreState.meta.total) return false;
+        if (restoreState.chunks[payload.index]) return true;
+        const bytes = decodeAndValidateDataPayload(payload);
+        if (!bytes) { restoreState.invalid += 1; scheduleRestoreStatus(); return false; }
+        restoreState.chunks[payload.index] = bytes;
+        restoreState.accepted += 1;
+        scheduleRestoreStatus(restoreState.accepted === restoreState.meta.total);
+        return true;
+      }
+      function scanImageData(imageData) {
+        const result = jsQRLib(imageData.data,imageData.width,imageData.height,{ inversionAttempts:'attemptBoth' });
+        return result?.data ? parsePayload(result.data) : null;
+      }
+      function scanCanvasPayload(canvas) {
+        const ctx = canvas.getContext('2d',{ willReadFrequently:true });
+        return scanImageData(ctx.getImageData(0,0,canvas.width,canvas.height));
+      }
+      function destroyJsqrWorkers() {
+        jsqrWorkers.forEach(worker => { try { worker.terminate(); } catch {} });
+        jsqrWorkers = [];
+        jsqrWorkerPending.forEach(resolve => resolve(null));
+        jsqrWorkerPending.clear();
+        if (jsqrWorkerUrl) { URL.revokeObjectURL(jsqrWorkerUrl); jsqrWorkerUrl = ''; }
+      }
+      function initJsqrWorkers() {
+        if (!('Worker' in window)) return false;
+        try {
+          destroyJsqrWorkers();
+          const librarySource = new TextDecoder().decode(StandaloneAssets.bytes('jsqr','main'));
+          const workerSource = `${librarySource}\nself.onmessage=function(event){const m=event.data||{};try{const pixels=new Uint8ClampedArray(m.buffer);const result=jsQR(pixels,m.width,m.height,{inversionAttempts:'attemptBoth'});self.postMessage({id:m.id,text:result&&result.data?result.data:''});}catch(error){self.postMessage({id:m.id,text:'',error:String(error&&error.message||error)});}};`;
+          jsqrWorkerUrl = URL.createObjectURL(new Blob([workerSource],{ type:'text/javascript' }));
+          for (let i = 0; i < 4; i += 1) {
+            const worker = new Worker(jsqrWorkerUrl);
+            worker.onmessage = event => {
+              const id = event.data?.id; const resolve = jsqrWorkerPending.get(id);
+              if (!resolve) return; jsqrWorkerPending.delete(id); resolve(event.data?.text ? parsePayload(event.data.text) : null);
+            };
+            worker.onerror = error => { console.warn('jsQR worker failed.', error); };
+            jsqrWorkers.push(worker);
+          }
+          return jsqrWorkers.length === 4;
+        } catch (error) { console.info('Parallel jsQR workers are unavailable.', error); destroyJsqrWorkers(); return false; }
+      }
+      function scanCanvasPayloadWorker(canvas, workerIndex = 0) {
+        if (jsqrWorkers.length !== 4) return Promise.resolve(scanCanvasPayload(canvas));
+        const ctx = canvas.getContext('2d',{ willReadFrequently:true });
+        const imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+        const id = ++jsqrWorkerRequestId;
+        return new Promise(resolve => {
+          let timer = 0; let settled = false;
+          const finish = payload => { if (settled) return; settled = true; if (timer) clearTimeout(timer); jsqrWorkerPending.delete(id); resolve(payload); };
+          jsqrWorkerPending.set(id,finish);
+          timer = setTimeout(() => { console.warn('jsQR worker timed out; using main-thread fallback.'); finish(scanCanvasPayload(canvas)); }, 1500);
+          try { jsqrWorkers[workerIndex % jsqrWorkers.length].postMessage({ id, width:imageData.width, height:imageData.height, buffer:imageData.data.buffer },[imageData.data.buffer]); }
+          catch (error) { console.warn('jsQR worker transfer failed.', error); finish(scanCanvasPayload(canvas)); }
+        });
+      }
+      function configureScanSpeedOptions() {}
+      function drawSourceCrop(source,canvas,sourceRect,size,preprocess=false){ if(canvas.width!==size)canvas.width=size;if(canvas.height!==size)canvas.height=size; const ctx=canvas.getContext('2d',{willReadFrequently:true}); const sw=source.width||source.videoWidth||FRAME_SIZE,sh=source.height||source.videoHeight||FRAME_SIZE; ctx.save(); if(preprocess&&'filter' in ctx) ctx.filter='grayscale(1) contrast(190%) brightness(78%)'; ctx.drawImage(source,sourceRect[0]/FRAME_SIZE*sw,sourceRect[1]/FRAME_SIZE*sh,sourceRect[2]/FRAME_SIZE*sw,sourceRect[3]/FRAME_SIZE*sh,0,0,size,size); ctx.restore(); }
+      async function processQrFrame(source, { camera = false } = {}){
+        if(nativeQrDetection&&barcodeDetector){ try{ const detected=await barcodeDetector.detect(source); let any=false; for(const code of detected){const payload=parsePayload(code.rawValue||''); if(payload&&acceptPayload(payload))any=true;} if(any)return true;}catch(error){console.info('BarcodeDetector fallback',error);nativeQrDetection=false;barcodeDetector=null;} }
+        const fullRegion=camera?[30,30,840,840]:[55,45,790,810];
+        if(!restoreState.meta||restoreState.meta.tiles===1){
+          drawSourceCrop(source,scanFullCanvas,fullRegion,JSQR_FULL_SCAN_SIZE,camera);
+          const payload=await scanCanvasPayloadWorker(scanFullCanvas,0);
+          if(payload)return acceptPayload(payload);
+          if(restoreState.meta)return false;
+        }
+        const regions=camera?[[0,0,525,525],[375,0,525,525],[0,375,525,525],[375,375,525,525]]:[[15,15,435,435],[450,15,435,435],[15,450,435,435],[450,450,435,435]];
+        for(let i=0;i<4;i++)drawSourceCrop(source,scanTileCanvases[i],regions[i],JSQR_TILE_SCAN_SIZE,camera);
+        const payloads=jsqrWorkers.length===4?await Promise.all(scanTileCanvases.map((c,i)=>scanCanvasPayloadWorker(c,i))):scanTileCanvases.map(scanCanvasPayload);
+        let any=false; for(const item of payloads)if(item&&acceptPayload(item))any=true; return any;
+      }
+      async function verifyRestore(){
+        const meta=restoreState.meta;if(!meta||restoreState.accepted!==meta.total)return false; $('#restoreStatusTitle').textContent=t('scanComplete'); const totalLength=restoreState.chunks.reduce((sum,chunk)=>sum+(chunk?.length||0),0),result=new Uint8Array(totalLength);let offset=0;for(const chunk of restoreState.chunks){if(!chunk)return false;result.set(chunk,offset);offset+=chunk.length;} const transportBytes=result.subarray(0,meta.transportSize??meta.size);let finalBytes=transportBytes;
+        if(meta.compression==='gzip'){if(!('DecompressionStream'in window))throw new Error('Gzip decompression is not supported by this browser.');finalBytes=await gunzipBytes(transportBytes);} if(finalBytes.length!==meta.size){$('#restoreStatusTitle').textContent=t('hashMismatch');$('#restoreStatusText').textContent=`size ${finalBytes.length} / ${meta.size}`;return false;} const hash=await sha256Hex(finalBytes.buffer.slice(finalBytes.byteOffset,finalBytes.byteOffset+finalBytes.byteLength));if(hash.toLowerCase()!==meta.sha256.toLowerCase()){ $('#restoreStatusTitle').textContent=t('hashMismatch');$('#restoreStatusText').textContent=`expected ${meta.sha256.slice(0,16)}… / got ${hash.slice(0,16)}…`;return false;} restoredBlob=new Blob([finalBytes],{type:meta.mime||'application/octet-stream'});restoredUrl=URL.createObjectURL(restoredBlob);$('#restoreResultMeta').textContent=`${meta.name} · ${formatBytes(meta.size)} · ${t('verified')}`;$('#restoreResult').hidden=false;$('#restoreStatusTitle').textContent=t('restoreReady');$('#restoreStatusText').textContent=`SHA-256 ${hash.slice(0,20)}…`;$('#restoreProgress').style.width='100%';$('#restoreStatusValue').textContent='100%';if(cameraRunning)stopCamera({keepStatus:true});$('#restoreResult').scrollIntoView({behavior:'smooth',block:'nearest'});return true;
+      }
+      function drawCameraFrame() {
+        const video = $('#cameraVideo');
+        if (!video.videoWidth || !video.videoHeight) return false;
+        const size = Math.min(video.videoWidth, video.videoHeight);
+        const sx = Math.max(0, (video.videoWidth - size) / 2);
+        const sy = Math.max(0, (video.videoHeight - size) / 2);
+        const ctx = cameraFrameCanvas.getContext('2d', { willReadFrequently:true });
+        ctx.drawImage(video, sx, sy, size, size, 0, 0, FRAME_SIZE, FRAME_SIZE);
+        return true;
+      }
+      function scheduleCameraFrame() {
+        if (!cameraRunning) return;
+        const video = $('#cameraVideo');
+        if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
+          cameraFrameHandle = video.requestVideoFrameCallback(() => cameraScanLoop());
+        } else {
+          cameraFrameHandle = requestAnimationFrame(cameraScanLoop);
+        }
+      }
+      async function cameraScanLoop() {
+        if (!cameraRunning) return;
+        if (!cameraScanBusy && drawCameraFrame()) {
+          cameraScanBusy = true;
+          try {
+            await processQrFrame(cameraFrameCanvas, { camera:true });
+            if (restoreState.meta) {
+              $('#restoreStatusTitle').textContent = t('cameraCollecting');
+              $('#restoreStatusText').textContent = `${restoreState.accepted} / ${restoreState.meta.total}`;
+              if (restoreState.accepted === restoreState.meta.total) {
+                await verifyRestore();
+                return;
+              }
+            } else {
+              $('#restoreStatusTitle').textContent = restoreState.provisionalChunks.size ? t('cameraPrecollecting') : t('cameraSearching');
+            }
+          } catch (error) {
+            console.info('Camera QR frame skipped.', error);
+          } finally {
+            cameraScanBusy = false;
+          }
+        }
+        scheduleCameraFrame();
+      }
+      function clampNumber(value,min,max){ return Math.min(max,Math.max(min,value)); }
+      async function applyCameraExposure(value) {
+        if (!cameraTrack?.applyConstraints) return;
+        try {
+          await cameraTrack.applyConstraints({ advanced:[{ exposureCompensation:Number(value) }] });
+          $('#exposureValue').textContent = Number(value).toFixed(1);
+        } catch (error) { console.info('Exposure compensation is unavailable.', error); }
+      }
+      async function tuneCameraForScreen() {
+        cameraTrack = cameraStream?.getVideoTracks?.()[0] || null;
+        const tuning = $('#cameraTuning');
+        tuning.hidden = true;
+        if (!cameraTrack) return;
+        try {
+          const capabilities = cameraTrack.getCapabilities?.() || {};
+          const advanced = {};
+          if (Array.isArray(capabilities.focusMode) && capabilities.focusMode.includes('continuous')) advanced.focusMode = 'continuous';
+          if (Array.isArray(capabilities.exposureMode) && capabilities.exposureMode.includes('continuous')) advanced.exposureMode = 'continuous';
+          if (Array.isArray(capabilities.whiteBalanceMode) && capabilities.whiteBalanceMode.includes('continuous')) advanced.whiteBalanceMode = 'continuous';
+          if (Object.keys(advanced).length) await cameraTrack.applyConstraints({ advanced:[advanced] });
+          const range = capabilities.exposureCompensation;
+          if (range && Number.isFinite(range.min) && Number.isFinite(range.max)) {
+            const slider = $('#exposureSlider');
+            const step = Number.isFinite(range.step) && range.step > 0 ? range.step : 0.1;
+            slider.min = String(range.min); slider.max = String(range.max); slider.step = String(step);
+            const target = clampNumber(-1.3, range.min, range.max);
+            slider.value = String(target); $('#exposureValue').textContent = target.toFixed(1);
+            tuning.hidden = false;
+            await applyCameraExposure(target);
+          }
+        } catch (error) { console.info('Camera tuning skipped.', error); }
+      }
+      async function startCamera() {
+        if (cameraRunning || scanning || !librariesReady) return;
+        if (!navigator.mediaDevices?.getUserMedia) {
+          $('#restoreStatus').hidden = false;
+          $('#restoreStatusTitle').textContent = t('cameraUnavailable');
+          $('#restoreStatusText').textContent = '';
+          return;
+        }
+        try {
+          $('#restoreStatus').hidden = false;
+          $('#restoreStatusTitle').textContent = t('cameraPreparing');
+          $('#restoreStatusText').textContent = '';
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            audio:false,
+            video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1920 }, height:{ ideal:1080 } }
+          });
+          const video = $('#cameraVideo');
+          video.srcObject = cameraStream;
+          await video.play();
+          await tuneCameraForScreen();
+          cameraRunning = true;
+          cameraScanBusy = false;
+          restoreState.passes += 1;
+          $('#cameraStage').hidden = false;
+          $('#restoreStatusTitle').textContent = restoreState.provisionalChunks.size ? t('cameraPrecollecting') : t('cameraSearching');
+          $('#restoreStatusText').textContent = t('cameraAlign');
+          updateRestoreStatus();
+          updateRestoreControls();
+          scheduleCameraFrame();
+        } catch (error) {
+          console.error(error);
+          stopCamera({ keepStatus:true });
+          $('#restoreStatus').hidden = false;
+          $('#restoreStatusTitle').textContent = t('cameraError');
+          $('#restoreStatusText').textContent = error?.message || '';
+        }
+      }
+      function stopCamera({ keepStatus = false } = {}) {
+        cameraRunning = false;
+        cameraScanBusy = false;
+        cameraTrack = null;
+        $('#cameraTuning').hidden = true;
+        const video = $('#cameraVideo');
+        if (cameraFrameHandle) {
+          try {
+            if ('cancelVideoFrameCallback' in HTMLVideoElement.prototype) video.cancelVideoFrameCallback(cameraFrameHandle);
+            else cancelAnimationFrame(cameraFrameHandle);
+          } catch {}
+          cameraFrameHandle = 0;
+        }
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+        try { video.pause(); } catch {}
+        video.srcObject = null;
+        $('#cameraStage').hidden = true;
+        updateRestoreControls();
+        if (!keepStatus && restoreState.meta && restoreState.accepted < restoreState.meta.total) {
+          $('#restoreStatusTitle').textContent = t('scanStopped');
+          $('#restoreStatusText').textContent = `${Math.max(0,restoreState.meta.total-restoreState.accepted)} ${t('missingLabel')}`;
+        }
+      }
+
+      async function startScan(){
+        if(!restoreVideoFile||scanning||cameraRunning||!librariesReady)return; if(!('ImageDecoder'in window)){ $('#restoreStatus').hidden=false;$('#restoreStatusTitle').textContent=t('unsupportedDecoder');$('#restoreStatusText').textContent=t('unsupportedDecoderBody');return; }
+        scanning=true;const token=++scanToken;restoreState.passes+=1;updateRestoreStatus();$('#scanButton').disabled=true;$('#stopScanButton').hidden=false;updateRestoreControls();$('#restoreStatus').hidden=false;$('#restoreStatusTitle').textContent=restoreState.meta?t('scanCollecting'):(restoreState.provisionalChunks.size?t('scanPrecollecting'):t('scanSearching'));$('#restoreStatusText').textContent=restoreVideoFile.name;
+        try{
+          const data=await restoreVideoFile.arrayBuffer(); const decoder=new ImageDecoder({data,type:'image/webp'});activeDecoder=decoder;await decoder.tracks.ready;const track=decoder.tracks.selectedTrack,frameCount=track?.frameCount||0;if(!frameCount)throw new Error('Animated WebP frames were not found.'); const frameCanvas=$('#scanCanvas'),ctx=frameCanvas.getContext('2d',{willReadFrequently:true});
+          for(let i=0;i<frameCount;i++){if(token!==scanToken||!scanning)break;const result=await decoder.decode({frameIndex:i,completeFramesOnly:true}),image=result.image;frameCanvas.width=image.displayWidth;frameCanvas.height=image.displayHeight;ctx.drawImage(image,0,0);image.close();await processQrFrame(frameCanvas);$('#restoreStatusValue').textContent=`${Math.round(((i+1)/frameCount)*100)}%`;$('#restoreProgress').style.width=`${((i+1)/frameCount)*100}%`;$('#restoreStatusText').textContent=`${i+1} / ${frameCount} frames`;if(restoreState.meta&&restoreState.accepted===restoreState.meta.total)break;if(i%3===0)await new Promise(requestAnimationFrame);}
+          decoder.close();activeDecoder=null;if(token!==scanToken)return;if(restoreState.meta&&restoreState.accepted===restoreState.meta.total)await verifyRestore();else if(restoreState.meta){$('#restoreStatusTitle').textContent=t('scanMissing');$('#restoreStatusText').textContent=`${Math.max(0,restoreState.meta.total-restoreState.accepted)} ${t('missingLabel')}`;}else if(restoreState.provisionalChunks.size){$('#restoreStatusTitle').textContent=t('scanPrecollecting');$('#restoreStatusText').textContent=`${restoreState.provisionalChunks.size.toLocaleString(language)} ${t('acceptedLabel')}`;}else{$('#restoreStatusTitle').textContent=t('notOpticalVideo');$('#restoreStatusText').textContent='';}
+        }catch(error){if(token===scanToken){console.error(error);$('#restoreStatusTitle').textContent=t('scanFailed');$('#restoreStatusText').textContent=error?.message||'';}}
+        finally{if(token===scanToken){scanning=false;$('#stopScanButton').hidden=true;updateRestoreControls();}}
+      }
+      function stopScan(){if(!scanning)return;scanning=false;scanToken+=1;try{activeDecoder?.close();}catch{}activeDecoder=null;$('#stopScanButton').hidden=true;updateRestoreControls();$('#restoreStatusTitle').textContent=t('scanStopped');}
+
+      async function loadLibraries() {
+        $('#generateStatus').hidden = false; $('#generateStatusTitle').textContent = t('libraryLoading'); $('#generateStatusValue').textContent = '';
+        try {
+          QRCodeLib = await StandaloneAssets.loadClassicScript('qrcode','browser','QRCode'); jsQRLib = await StandaloneAssets.loadClassicScript('jsqr','main','jsQR');
+          if (!QRCodeLib?.toCanvas || typeof jsQRLib !== 'function') throw new Error('Unexpected QR library exports');
+          if ('BarcodeDetector' in window) {
+            try {
+              const formats = await BarcodeDetector.getSupportedFormats();
+              if (formats.includes('qr_code')) { barcodeDetector = new BarcodeDetector({ formats:['qr_code'] }); nativeQrDetection = true; }
+            } catch (error) { console.info('Native BarcodeDetector is unavailable.', error); }
+          }
+          initJsqrWorkers();
+          configureScanSpeedOptions();
+          librariesReady = true; $('#generateStatus').hidden = true; updateSourceCard(); updateVideoCard();
+        } catch (error) { console.error(error); librariesReady = false; $('#generateStatus').hidden = false; $('#generateStatusTitle').textContent = t('dependencyError'); $('#generateStatusText').textContent = error?.message || ''; $('#recordingWarning').hidden = false; $('#recordingWarning').textContent = t('dependencyError'); }
+      }
+
+      attachPreviewHandlers('generated');
+      attachPreviewHandlers('restore');
+      $('#versionBadge').textContent = `v${APP_CONFIG.version}`;
+      $('#createTab').addEventListener('click',() => setMode('create')); $('#restoreTab').addEventListener('click',() => setMode('restore'));
+      $('#languageButton').addEventListener('click',() => { language = language === 'ja' ? 'en' : 'ja'; writeStorage(`${APP_CONFIG.slug}:language`,language); applyLanguage(); });
+      const helpDialog = $('#helpDialog'); $('#helpButton').addEventListener('click',() => helpDialog.showModal()); $('#closeHelpButton').addEventListener('click',() => helpDialog.close()); helpDialog.addEventListener('click',event => { const r=helpDialog.getBoundingClientRect(); if (event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom) helpDialog.close(); });
+      makeDropZone($('#sourceDropZone'),$('#sourceInput'),selectSource); makeDropZone($('#videoDropZone'),$('#videoInput'),file => selectRestoreVideo(file));
+      $('#replaceSourceButton').addEventListener('click',() => $('#sourceInput').click()); $('#replaceVideoButton').addEventListener('click',() => $('#videoInput').click());
+      $$('input[name="tileMode"]').forEach(input => input.addEventListener('change',configureCreateOptions)); $('#fpsSelect').addEventListener('change',updateEstimates);
+      $('#generateButton').addEventListener('click',generateVideo); $('#cancelGenerateButton').addEventListener('click',cancelGeneration);
+      $('#downloadVideoButton').addEventListener('click',() => { if (!generatedBlob) return; downloadBlob(generatedBlob,generatedFilename); showToast(t('savedVideo')); });
+      $('#fullscreenQrButton').addEventListener('click',async () => { const img=$('#generatedVideo'); if (!generatedUrl) return; try { if (img.requestFullscreen) await img.requestFullscreen(); } catch (error) { console.info('Fullscreen is unavailable.', error); } });
+      $('#sendToRestoreButton').addEventListener('click',async () => { if (!generatedBlob) return; const file = new File([generatedBlob],generatedFilename,{ type:generatedBlob.type }); const selected = await selectRestoreVideo(file); if (selected) setMode('restore'); });
+      $('#startCameraButton').addEventListener('click',startCamera); $('#stopCameraButton').addEventListener('click',() => stopCamera());
+      $('#scanButton').addEventListener('click',startScan); $('#stopScanButton').addEventListener('click',stopScan);
+      $('#resetRestoreButton').addEventListener('click',async () => { if (!restoreState.meta && restoreState.accepted === 0) { resetRestoreState(true); return; } const ok = await AppConfirm.ask({ title:t('confirmTitle'),message:t('confirmResetRestore'),confirmLabel:t('resetAction'),cancelLabel:t('cancel'),tone:'danger' }); if (ok) resetRestoreState(true); });
+      $('#downloadRestoredButton').addEventListener('click',() => { if (!restoredBlob || !restoreState.meta) return; downloadBlob(restoredBlob,safeFilename(restoreState.meta.name)); showToast(t('savedFile')); });
+
+      applyLanguage(); updateSourceCard(); updateVideoCard(); updateEstimates(); loadLibraries();
+      $('#exposureSlider').addEventListener('input',event => {
+        $('#exposureValue').textContent = Number(event.target.value).toFixed(1);
+        clearTimeout(exposureApplyTimer);
+        exposureApplyTimer = setTimeout(() => applyCameraExposure(event.target.value), 80);
+      });
+      window.addEventListener('pagehide',() => { stopCamera({keepStatus:true}); destroyJsqrWorkers(); if (generatedUrl) URL.revokeObjectURL(generatedUrl); if (restoreVideoUrl) URL.revokeObjectURL(restoreVideoUrl); if (restoredUrl) URL.revokeObjectURL(restoredUrl); });
+    })();
+  </script>
+</body>
+</html>
