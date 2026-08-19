@@ -1,47 +1,221 @@
 # Optical File
 
-Optical File (QR Tape) turns a small file into an **Animated QR WebP** and reconstructs the original file either by scanning the Animated QR with another device camera or by decoding the WebP directly, entirely in the browser.
+[![GitHub Pages](https://github.com/ttomohisa/htmlapps-optical-file-camera/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-optical-file-camera/actions/workflows/deploy-pages.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://ttomohisa.github.io/htmlapps-optical-file-camera/)
 
-- No upload / no runtime network access
-- Animated WebP output (`.webp`)
-- **Camera restore** from an Animated QR displayed on another device
-- Fast direct restore by loading the WebP file
-- Camera-first mode: 1 QR code per frame
-- Faster mode: 4 QR codes per frame
-- CRC32 per data block and SHA-256 for the final file
-- Optional gzip before QR encoding when it meaningfully reduces size
-- Japanese / English UI
-- Single-HTML build and self-extract build supported by the template
+[日本語版 README](README.ja.md)
 
-## Practical scope
+A privacy-focused, single-HTML app that turns a small file into an **Animated QR WebP** and restores it by scanning the animation with another device camera or by decoding the WebP directly.
 
-The hard source limit is **1 MiB**. The default carrier intentionally uses lower-density QR codes so screen-to-camera scanning is more reliable.
+## 🚀 Live demo
 
-## Build
+### [Open Optical File on GitHub Pages](https://ttomohisa.github.io/htmlapps-optical-file-camera/)
 
-On Windows, run:
+GitHub Pages delivers the initial HTML. After it loads, file reading, optional gzip compression, QR generation, Animated WebP creation, camera scanning, reconstruction, CRC32 checks, and SHA-256 verification are processed locally on your device. The selected files and camera frames are not uploaded by the app.
+
+## Features
+
+- Convert a file up to **1 MiB** into an Animated QR WebP (`.webp`)
+- Restore the original file by pointing another device camera at the Animated QR
+- Restore directly from the generated WebP without using a camera
+- Camera-first default: **1 QR per frame at 6 fps**
+- Optional faster mode with **4 QR codes per frame**
+- Low-luminance QR carrier to reduce screen bloom and overexposure when filming another display
+- Automatic negative camera exposure compensation when supported by the device
+- Retain valid data blocks even when they are scanned before the metadata QR
+- Repeat compact metadata roughly every two seconds so scanning can start mid-animation
+- CRC32 validation for each data block
+- SHA-256 verification for the reconstructed file
+- Optional gzip compression when it meaningfully reduces the transfer size
+- Japanese and English UI in the same HTML
+- Responsive smartphone-first layout
+- Embedded SVG favicon
+- Embedded `qrcode` and `jsQR` runtime libraries
+- Standalone HTML and self-extract HTML builds
+
+## Quick start
+
+### Use the web demo
+
+Just [open the demo](https://ttomohisa.github.io/htmlapps-optical-file-camera/). No installation or account is required.
+
+For camera restore, allow camera access when the browser asks for permission.
+
+### Build a standalone HTML
+
+1. Download or clone this repository.
+2. Double-click `build-standalone.bat` on Windows.
+3. The first build downloads the exact dependency versions pinned in `dependencies.json`.
+4. Open the generated `dist/index.html`, or copy it wherever you need it.
+
+The build also creates `dist/index.self-extract.html` unless the self-extract build is explicitly skipped.
+
+Python, Node.js, and a local web server are not required. The builder uses Windows PowerShell and the built-in `tar.exe`.
+
+## Usage
+
+### Create an Animated QR
+
+1. Open **Create Animated QR**.
+2. Select a file up to **1 MiB**.
+3. Normally, keep **Camera-first · 1 QR / frame** and **6 fps**.
+4. Generate the Animated WebP.
+5. Save the `.webp` file or show the result fullscreen for another device to scan.
+
+The app may gzip the source before QR encoding when compression produces a meaningful reduction. The reconstructed output is always verified against the SHA-256 hash of the original file.
+
+### Restore with a camera
+
+1. Open Optical File on the receiving device.
+2. Switch to **Restore from Animated QR**.
+3. Start the camera and allow camera access.
+4. Display the Animated QR fullscreen on the sending device.
+5. Keep the whole QR inside the camera guide.
+6. Leave the animation in view until all blocks are collected and verification finishes.
+7. Save the reconstructed file.
+
+The scanner can keep CRC-valid data blocks even before metadata is detected. Metadata is inserted repeatedly, so you do not need to wait for the animation to return to its first frame.
+
+### Restore directly from the WebP
+
+1. Open **Restore from Animated QR**.
+2. Choose the generated `.webp` file.
+3. Start WebP analysis.
+4. When all blocks are collected and SHA-256 matches, save the reconstructed file.
+
+Direct Animated WebP analysis uses the browser `ImageDecoder` API. If the current browser does not provide it, use camera restore or a compatible Chromium-based browser.
+
+## Camera scanning tips
+
+Screen-to-camera QR transfer is affected by display brightness, reflections, focus, exposure, viewing angle, and camera quality. For the most reliable result:
+
+- Use **Camera-first · 1 QR / frame** first
+- Display the Animated QR fullscreen
+- Keep the sending screen and receiving camera roughly parallel
+- Move the camera far enough back that the complete QR and its margin fit inside the guide
+- Avoid strong reflections on the sending display
+- If the image is blown out, lower the camera exposure with the in-app control when available
+- Keep the animation visible through multiple loops if some blocks are missed
+
+The app intentionally limits the source file to **1 MiB** so QR density can remain practical for camera scanning.
+
+## Publish with GitHub Pages
+
+The repository includes a workflow that builds the standalone HTML and deploys it to GitHub Pages automatically.
+
+1. Push the repository to GitHub as `htmlapps-optical-file-camera`.
+2. Open **Settings → Pages → Build and deployment → Source** and select **GitHub Actions**.
+3. Push to `main`, or manually run **Deploy standalone app to GitHub Pages** from the Actions tab.
+4. After a successful deployment, the app is available at `https://ttomohisa.github.io/htmlapps-optical-file-camera/`.
+
+Each push to `main` builds and verifies `dist/index.html` and `dist/index.self-extract.html` before deployment. If GitHub Pages has not been enabled yet, the workflow still validates the build and explains the one-time setup in the workflow summary.
+
+## Development and build layout
+
+```text
+.
+├─ src/index.template.html          # Application template
+├─ app.config.json                  # App metadata and build settings
+├─ dependencies.json                # Pinned npm dependencies and embedded assets
+├─ build-standalone.bat             # Windows build entry point
+├─ build-standalone.ps1             # Standalone HTML builder
+├─ scripts/
+│  ├─ check-repository.ps1          # Repository/build validation
+│  ├─ build-self-extract.ps1        # Self-extract HTML builder
+│  ├─ verify-standalone.ps1         # Standalone HTML verification
+│  └─ verify-self-extract.ps1       # Self-extract verification
+├─ dist/
+│  ├─ index.html                    # Generated standalone app
+│  └─ index.self-extract.html       # Generated self-extract app
+└─ .github/workflows/
+   ├─ build-standalone.yml          # Pull request build validation
+   └─ deploy-pages.yml              # GitHub Pages deployment
+```
+
+### Update dependencies
+
+Edit the versions and asset paths in `dependencies.json`, then run:
 
 ```bat
 build-standalone.bat
 ```
 
-The build embeds the pinned npm assets into the single HTML.
+To discard the dependency cache and download the pinned packages again:
 
-## Restore compatibility
+```bat
+build-standalone.bat -ForceDownload
+```
 
-Direct WebP restore uses the browser `ImageDecoder` API. Camera restore uses `getUserMedia()` to scan the Animated QR displayed on another device and requires camera permission.
+The build process automatically:
 
-## Security and privacy
+- Downloads the pinned npm package tarballs
+- Extracts only the configured runtime assets
+- Embeds those assets directly into the generated HTML
+- Records dependency and asset SHA-256 hashes in the generated manifest
+- Rejects unresolved placeholders and external runtime script/style references
+- Verifies that `connect-src 'none'` remains in the Content Security Policy
+- Generates the standalone HTML, self-extract HTML, and build manifests
 
-Everything runs locally. The generated WebP contains the original file data and is **not encrypted**. Anyone who has the WebP can reconstruct the source file.
+## Privacy and runtime network protection
 
-See [SECURITY.md](SECURITY.md), [APP_SPEC.md](APP_SPEC.md), and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Optical File is designed to keep the selected file and camera data on the device.
 
+The generated standalone HTML includes a Content Security Policy with:
 
-## Camera scanning
+```text
+connect-src 'none'
+```
 
-The app uses a low-luminance gray QR carrier and defaults to one QR per frame to reduce screen bloom. Supported cameras also receive negative exposure compensation automatically.
+The GitHub Pages version requires the initial page request, but after the app is loaded it does not upload the selected source file, generated WebP, camera frames, or reconstructed file.
 
-## Faster metadata acquisition
+For offline use, build and open `dist/index.html` locally. Browser camera access from a local file can vary by browser, so GitHub Pages / HTTPS is the recommended way to use camera restore.
 
-Metadata uses a compact Base45 QR repeated roughly every two seconds. Valid data blocks can be CRC-checked and retained before metadata is seen, then merged automatically when metadata is detected.
+## File format and integrity checks
+
+Optical File uses its own animated-QR transport format.
+
+- Source data may be gzip-compressed before QR encoding
+- Data is split into numbered blocks
+- Each data block carries a CRC32 checksum
+- Metadata contains the information required to reconstruct the file
+- Metadata QR frames are repeated during the animation
+- The final reconstructed file is accepted only when its SHA-256 hash matches the original
+
+These checks detect missing or corrupted data, but they are **not encryption** and are not a substitute for authenticated secure transfer.
+
+## Limitations
+
+- Source files are limited to **1 MiB**.
+- Animated WebP output can be much larger than the original file.
+- Screen-to-camera performance depends on the display, camera, distance, focus, exposure, and ambient reflections.
+- Camera access requires browser permission and is most reliable from an HTTPS origin such as GitHub Pages.
+- Direct WebP restore requires a browser with Animated WebP frame decoding through `ImageDecoder`.
+- The generated WebP is **not encrypted**. Anyone who obtains it can reconstruct the embedded source file.
+- This is intended for small optical transfers, not as a replacement for high-speed network or USB file transfer.
+
+## Dependencies
+
+| Library | Version | License | Purpose |
+| --- | ---: | --- | --- |
+| qrcode | 1.4.4 | MIT | QR code generation |
+| jsQR | 1.4.0 | Apache-2.0 | QR code decoding fallback |
+
+Camera capture, WebP assembly, hashing, compression, and reconstruction are implemented with browser APIs and application code. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for dependency details.
+
+## Related documents
+
+- [APP_SPEC.md](APP_SPEC.md) — application and transport specification
+- [SECURITY.md](SECURITY.md) — security notes and reporting
+- [VERIFY_OFFLINE.md](VERIFY_OFFLINE.md) — offline verification guidance
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) — third-party licenses
+
+## Contributing
+
+Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidance.
+
+## License
+
+Copyright © 2026 ttomohisa
+
+Licensed under the [MIT License](LICENSE).

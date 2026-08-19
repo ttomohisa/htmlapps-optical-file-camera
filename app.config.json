@@ -9,7 +9,7 @@
   "defaultLanguage": "auto",
   "repository": {
     "owner": "ttomohisa",
-    "name": "htmlapps-optical-file"
+    "name": "htmlapps-optical-file-camera"
   },
   "build": {
     "output": "dist/index.html",
