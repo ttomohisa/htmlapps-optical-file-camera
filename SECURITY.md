@@ -63,3 +63,9 @@ Optical File intentionally embeds the selected source bytes into visible QR fram
 ## Camera restore
 
 Camera frames are processed locally in memory for QR decoding and are not uploaded or persisted by Optical File. Camera access is requested only when the user starts camera restore and the media tracks are stopped when scanning ends or the page is left.
+
+## Verification receipts
+
+A receipt is an explicit local JSON download after SHA-256 matches the reconstructed bytes. It records the sanitized output filename, byte length, full actual hash, app identity/version and compact transport metadata. Original-file and receipt exports share the same immutable verified result; reset/replacement invalidates it and late decompression/hash work cannot publish an obsolete result.
+
+Receipts contain no file contents, QR payloads, session IDs, local paths, camera data, timestamps or persistent history. The filename and hash can nevertheless identify a file. Review the receipt before sharing it and apply an appropriate confidentiality level. A checksum match establishes internal integrity against the received metadata; it does not establish sender identity or trust, encrypt the file, or provide a signed certificate. A receipt can be edited by anyone holding it. No automatic upload, persistence, clipboard access or new permission is introduced.

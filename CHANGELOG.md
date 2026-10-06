@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add an explicit local JSON verification receipt for the current restored file, including its sanitized filename, actual byte size and full verified SHA-256.
+- Keep original-file and receipt downloads bound to one immutable result; ignore obsolete SHA-256/gzip completions and failures after reset or replacement.
+- Explain receipt metadata privacy and checksum limitations in Japanese/English UI and help.
+- Add synthetic restore regression tests to repository validation, covering both source and generated HTML.
+
 ## v1.0.0
 
 - Initial public release of Optical File.

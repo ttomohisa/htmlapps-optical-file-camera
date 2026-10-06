@@ -475,7 +475,8 @@
           <span class="result-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-9"/></svg></span>
           <div><h3 data-i18n="restoreReady">元のファイルを復元しました</h3><p id="restoreResultMeta"></p></div>
         </div>
-        <div class="action-row"><button class="button primary" id="downloadRestoredButton" type="button" data-i18n="downloadRestored">元のファイルを保存</button></div>
+        <div class="action-row"><button class="button primary" id="downloadRestoredButton" type="button" data-i18n="downloadRestored" disabled>元のファイルを保存</button><button class="button" id="downloadReceiptButton" type="button" data-i18n="downloadReceipt" aria-describedby="receiptPrivacy" disabled>検証記録を保存</button></div>
+        <p class="hint" id="receiptPrivacy" data-i18n="receiptPrivacy">検証記録にはファイル名・サイズ・SHA-256が含まれ、ファイルを特定できる場合があります。共有前に内容を確認してください。</p>
       </div>
 
       <canvas id="scanCanvas" width="900" height="900" hidden></canvas>
@@ -499,6 +500,7 @@
       <ol><li data-i18n="helpCreate1">「Animated QRを作る」で1 MiB以下のファイルを選びます。カメラ復元しやすいよう、上限自体を1 MiBにしています。</li><li data-i18n="helpCreate2">通常は「カメラ優先・1 QR / frame」「6 fps」がおすすめです。1枚のQRを大きく粗くして、画面撮影で読み取りやすくしています。</li><li data-i18n="helpCreate3">完成したAnimated WebPを保存します。</li></ol>
       <h3 data-i18n="helpRestoreTitle">Animated QRから復元</h3>
       <ol><li data-i18n="helpRestore1">別端末でAnimated QRを表示して「カメラを開始」を押し、QR全体を枠に合わせます。WebPファイルを直接選んで解析することもできます。</li><li data-i18n="helpRestore2">カメラ読み取りではデータQRをメタデータより先に拾っても仮保存します。メタデータQRも約2秒ごとに再表示されるため、先頭を待つ必要はありません。</li><li data-i18n="helpRestore3">すべて揃うとSHA-256で検証し、一致した場合だけ元ファイルを保存できます。</li></ol>
+      <p data-i18n="helpReceipt">復元に成功したら「検証記録を保存」でJSONを保存できます。元ファイルのデータは含まず、ファイル名・サイズ・完全なSHA-256と転送情報を記録します。ファイルを特定できる場合があるため、共有前に確認してください。チェックサム一致は暗号化・認証・署名付き証明書ではありません。リセットや別のWebPへの切り替えで現在の結果は消去され、再検証が必要です。</p>
       <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
       <p data-i18n="helpPrivacyBody">ファイル、WebP、解析結果はこのブラウザー内だけで処理されます。このアプリは実行時にネットワーク接続しません。</p>
       <h3 data-i18n="helpNotesTitle">注意事項</h3>
@@ -571,7 +573,7 @@
         ja: {
           brandMeta:'ファイルをAnimated QRにする', helpTitle:'使い方と注意事項', close:'閉じる', introTitle:'ファイルを、動くQRにする。', lead:'ファイルを連続QRへ変換してAnimated WebPとして保存。別端末のカメラで読み取るか、WebPを直接解析して元のファイルへ復元できます。', localBadge:'ファイルを送信しません',
           createTab:'Animated QRを作る', restoreTab:'Animated QRから復元', createTitle:'Animated QRを作る', createBody:'最大1 MiBのファイルを、画面撮影で読み取りやすい低輝度・低密度QRへ変換し、1つのAnimated WebPとして保存します。', sourceDropTitle:'ファイルを選択', sourceDropBody:'またはここへドロップ · 最大1 MiB', replaceFile:'別のファイル', layoutLabel:'転送方式', fastMode:'速度優先 · 4 QR / frame', compatMode:'カメラ優先 · 1 QR / frame', fpsLabel:'フレームレート', chunksLabel:'データブロック', framesLabel:'データフレーム', durationLabel:'目安時間', outputLabel:'WebPサイズ目安', largeSourceWarning:'512 KiBを超えるとフレーム数がかなり増えます。カメラ復元を優先してQRを大きめにしているため、1 MiB以下限定です。', generate:'Animated WebPを生成', cancel:'キャンセル', videoReady:'Animated QRを作成しました', downloadVideo:'WebPを保存', fullscreenQr:'QRを全画面表示', testRestore:'このWebPを復元テスト', technicalTitle:'技術情報', chunkCheck:'チャンク検証', fileCheck:'ファイル検証',
-          restoreTitle:'Animated QRから元のファイルを復元', restoreBody:'別端末に表示したAnimated QRをカメラで読み取るか、WebPを直接読み込んで復元します。', cameraTitle:'カメラで読み取る', cameraBody:'別の端末でAnimated QRを表示し、QR全体が枠に入るようにカメラを向けてください。取得済みブロックは自動で蓄積します。', startCamera:'カメラを開始', stopCamera:'カメラを停止', cameraAlign:'QR全体を枠に合わせてください', exposureLabel:'露出補正', exposureHint:'画面が白く光る場合は、左へ動かすと白飛びを抑えられます。', orWebp:'またはWebPファイルから', videoDropTitle:'Animated WebPを選択', videoDropBody:'またはここへドロップ · .webp', replaceVideo:'別のWebP', scanSpeedLabel:'解析速度', scanReliable:'確実 · 1×', scanFast:'高速 · 2×', scanTurbo:'ターボ · 3×', rescanLabel:'取りこぼしたとき', rescanBody:'カメラでは画面を向け続けると不足分を自動補完します。WebP解析では同じファイルを再解析できます。', decodeModeLabel:'高速解析', decodeModeBody:'Animated WebPのフレームを表示時間を待たずに直接解析します。', startScan:'WebPを解析', stopScan:'停止', resetRestore:'復元状態をリセット', acceptedLabel:'取得済み', missingLabel:'不足', invalidLabel:'破損フレーム', passLabel:'解析回数', restoreReady:'元のファイルを復元しました', downloadRestored:'元のファイルを保存', footer:'QR Tape · Animated QR / WebP · ローカル処理', previewUnavailable:'プレビューを表示できません', generatedPreviewFallbackBody:'WebPは生成済みです。保存や復元テストはそのまま利用できます。', restorePreviewFallbackBody:'画像表示に対応していない場合でも、WebPの直接解析はそのまま利用できます。',
+          restoreTitle:'Animated QRから元のファイルを復元', restoreBody:'別端末に表示したAnimated QRをカメラで読み取るか、WebPを直接読み込んで復元します。', cameraTitle:'カメラで読み取る', cameraBody:'別の端末でAnimated QRを表示し、QR全体が枠に入るようにカメラを向けてください。取得済みブロックは自動で蓄積します。', startCamera:'カメラを開始', stopCamera:'カメラを停止', cameraAlign:'QR全体を枠に合わせてください', exposureLabel:'露出補正', exposureHint:'画面が白く光る場合は、左へ動かすと白飛びを抑えられます。', orWebp:'またはWebPファイルから', videoDropTitle:'Animated WebPを選択', videoDropBody:'またはここへドロップ · .webp', replaceVideo:'別のWebP', scanSpeedLabel:'解析速度', scanReliable:'確実 · 1×', scanFast:'高速 · 2×', scanTurbo:'ターボ · 3×', rescanLabel:'取りこぼしたとき', rescanBody:'カメラでは画面を向け続けると不足分を自動補完します。WebP解析では同じファイルを再解析できます。', decodeModeLabel:'高速解析', decodeModeBody:'Animated WebPのフレームを表示時間を待たずに直接解析します。', startScan:'WebPを解析', stopScan:'停止', resetRestore:'復元状態をリセット', acceptedLabel:'取得済み', missingLabel:'不足', invalidLabel:'破損フレーム', passLabel:'解析回数', restoreReady:'元のファイルを復元しました', downloadRestored:'元のファイルを保存', downloadReceipt:'検証記録を保存', receiptPrivacy:'検証記録にはファイル名・サイズ・SHA-256が含まれ、ファイルを特定できる場合があります。共有前に内容を確認してください。', savedReceipt:'検証記録を保存しました。', helpReceipt:'復元に成功したら「検証記録を保存」でJSONを保存できます。元ファイルのデータは含まず、ファイル名・サイズ・完全なSHA-256と転送情報を記録します。ファイルを特定できる場合があるため、共有前に確認してください。チェックサム一致は暗号化・認証・署名付き証明書ではありません。リセットや別のWebPへの切り替えで現在の結果は消去され、再検証が必要です。', footer:'QR Tape · Animated QR / WebP · ローカル処理', previewUnavailable:'プレビューを表示できません', generatedPreviewFallbackBody:'WebPは生成済みです。保存や復元テストはそのまま利用できます。', restorePreviewFallbackBody:'画像表示に対応していない場合でも、WebPの直接解析はそのまま利用できます。',
           helpCreateTitle:'Animated QRを作る', helpCreate1:'「Animated QRを作る」で1 MiB以下のファイルを選びます。カメラ復元しやすいよう、上限自体を1 MiBにしています。', helpCreate2:'通常は「カメラ優先・1 QR / frame」「6 fps」がおすすめです。1枚のQRを大きく粗くして、画面撮影で読み取りやすくしています。', helpCreate3:'完成したAnimated WebPを保存します。', helpRestoreTitle:'Animated QRから復元', helpRestore1:'別端末でAnimated QRを表示して「カメラを開始」を押し、QR全体を枠に合わせます。WebPファイルを直接選んで解析することもできます。', helpRestore2:'カメラ読み取りではデータQRをメタデータより先に拾っても仮保存します。メタデータQRも約2秒ごとに再表示されるため、先頭を待つ必要はありません。', helpRestore3:'すべて揃うとSHA-256で検証し、一致した場合だけ元ファイルを保存できます。', helpPrivacyTitle:'プライバシー', helpPrivacyBody:'ファイル、WebP、解析結果はこのブラウザー内だけで処理されます。このアプリは実行時にネットワーク接続しません。', helpNotesTitle:'注意事項', helpNoteEncryption:'生成したAnimated WebPには元ファイルのデータが入っています。暗号化はしていないため、WebPを持つ人は元ファイルを復元できます。', helpNoteSize:'QRを読み取りやすくするため、1 MiB以下の小さなファイル専用です。Animated WebPは元ファイルよりかなり大きくなる場合があります。', helpNoteCodec:'出力はAnimated WebPです。カメラ復元では別端末に表示して読み取れます。WebPファイルを直接解析する場合はImageDecoder対応ブラウザーが必要です。', helpNoteDrops:'QRの読み取りに失敗したフレームがあっても、同じWebPを再解析すると不足分だけ補完できます。', helpOffline:'CRC32で各データブロックを、SHA-256で復元ファイル全体を検証します。ただし欠落訂正や暗号化を行うツールではありません。',
           confirmTitle:'確認', confirmReplace:'現在の生成結果を破棄して別のファイルを選びますか？', confirmResetRestore:'取得済みの復元データをすべて消去しますか？', continueAction:'続ける', resetAction:'リセットする',
           fileTooLarge:'ファイルが大きすぎます。1 MiB以下にしてください。', unsupportedWebP:'このブラウザーではWebP画像を生成できません。別のブラウザーでお試しください。', unsupportedDecoder:'このブラウザーではAnimated WebPのフレーム解析に対応していません。', unsupportedDecoderBody:'Chrome / EdgeなどImageDecoder対応ブラウザーで復元してください。', webpOnly:'Animated WebP（.webp）を選択してください。', dependencyError:'内包ライブラリを読み込めませんでした。ビルドされたHTMLを開いているか確認してください。', readyToGenerate:'生成準備完了', hashing:'ファイルを検証しています…', compressing:'転送量を最適化しています…', recording:'QRフレームを生成しています', finalizing:'Animated WebPを仕上げています…', generationCancelled:'Animated WebP生成をキャンセルしました。', generationFailed:'Animated WebP生成に失敗しました。', noSource:'先にファイルを選択してください。',
@@ -581,7 +583,7 @@
         en: {
           brandMeta:'Turn files into animated QR', helpTitle:'How to use & notes', close:'Close', introTitle:'Turn a file into animated QR.', lead:'Convert a file into QR frames, save them as one Animated WebP, then restore it with another device camera or by decoding the WebP directly.', localBadge:'No file upload',
           createTab:'Create Animated QR', restoreTab:'Restore from Animated QR', createTitle:'Create Animated QR', createBody:'Turn a file up to 1 MiB into low-glare, lower-density QR frames for camera scanning and save them as one Animated WebP.', sourceDropTitle:'Choose a file', sourceDropBody:'or drop it here · up to 1 MiB', replaceFile:'Choose another file', layoutLabel:'Transport mode', fastMode:'Faster · 4 QR / frame', compatMode:'Camera-first · 1 QR / frame', fpsLabel:'Frame rate', chunksLabel:'Data blocks', framesLabel:'Data frames', durationLabel:'Estimated time', outputLabel:'Est. WebP size', largeSourceWarning:'Over 512 KiB, the frame count grows quickly. To keep QR codes easier to scan, this tool is limited to 1 MiB.', generate:'Generate Animated WebP', cancel:'Cancel', videoReady:'Animated QR created', downloadVideo:'Save WebP', fullscreenQr:'Show QR fullscreen', testRestore:'Test restore this WebP', technicalTitle:'Technical details', chunkCheck:'Chunk check', fileCheck:'File check',
-          restoreTitle:'Restore from Animated QR', restoreBody:'Scan an Animated QR shown on another device with the camera, or load the WebP directly.', cameraTitle:'Scan with camera', cameraBody:'Show the Animated QR on another device and point this camera at it so the whole carrier fits inside the guide. Accepted blocks accumulate automatically.', startCamera:'Start camera', stopCamera:'Stop camera', cameraAlign:'Fit the whole QR inside the guide', exposureLabel:'Exposure', exposureHint:'If the screen blooms or washes out, move this left to reduce overexposure.', orWebp:'or restore from a WebP file', videoDropTitle:'Choose an Animated WebP', videoDropBody:'or drop it here · .webp', replaceVideo:'Choose another WebP', scanSpeedLabel:'Scan speed', scanReliable:'Reliable · 1×', scanFast:'Fast · 2×', scanTurbo:'Turbo · 3×', rescanLabel:'If frames are missed', rescanBody:'With the camera, keep the carrier in view to fill missing blocks automatically. For WebP analysis, scan the same file again.', decodeModeLabel:'Fast decode', decodeModeBody:'Frames are decoded directly without waiting for animation playback.', startScan:'Analyze WebP', stopScan:'Stop', resetRestore:'Reset restore state', acceptedLabel:'Accepted', missingLabel:'Missing', invalidLabel:'Invalid frames', passLabel:'Scan passes', restoreReady:'Original file restored', downloadRestored:'Save original file', footer:'QR Tape · Animated QR / WebP · Local processing', previewUnavailable:'Preview unavailable', generatedPreviewFallbackBody:'The WebP was generated successfully. Saving and restore testing are still available.', restorePreviewFallbackBody:'Even if the image preview is unavailable, direct WebP analysis can still be used.',
+          restoreTitle:'Restore from Animated QR', restoreBody:'Scan an Animated QR shown on another device with the camera, or load the WebP directly.', cameraTitle:'Scan with camera', cameraBody:'Show the Animated QR on another device and point this camera at it so the whole carrier fits inside the guide. Accepted blocks accumulate automatically.', startCamera:'Start camera', stopCamera:'Stop camera', cameraAlign:'Fit the whole QR inside the guide', exposureLabel:'Exposure', exposureHint:'If the screen blooms or washes out, move this left to reduce overexposure.', orWebp:'or restore from a WebP file', videoDropTitle:'Choose an Animated WebP', videoDropBody:'or drop it here · .webp', replaceVideo:'Choose another WebP', scanSpeedLabel:'Scan speed', scanReliable:'Reliable · 1×', scanFast:'Fast · 2×', scanTurbo:'Turbo · 3×', rescanLabel:'If frames are missed', rescanBody:'With the camera, keep the carrier in view to fill missing blocks automatically. For WebP analysis, scan the same file again.', decodeModeLabel:'Fast decode', decodeModeBody:'Frames are decoded directly without waiting for animation playback.', startScan:'Analyze WebP', stopScan:'Stop', resetRestore:'Reset restore state', acceptedLabel:'Accepted', missingLabel:'Missing', invalidLabel:'Invalid frames', passLabel:'Scan passes', restoreReady:'Original file restored', downloadRestored:'Save original file', downloadReceipt:'Save verification receipt', receiptPrivacy:'The receipt includes the filename, size and SHA-256, which may identify the file. Review it before sharing.', savedReceipt:'Verification receipt saved.', helpReceipt:'After a successful restore, save a JSON verification receipt with the output filename, size, complete SHA-256 and compact transport details. It contains no file contents, but the metadata may identify the file: review it before sharing. A matching checksum is not encryption, authentication or a signed certificate. Resetting or choosing another WebP clears the current result and requires verification again.', footer:'QR Tape · Animated QR / WebP · Local processing', previewUnavailable:'Preview unavailable', generatedPreviewFallbackBody:'The WebP was generated successfully. Saving and restore testing are still available.', restorePreviewFallbackBody:'Even if the image preview is unavailable, direct WebP analysis can still be used.',
           helpCreateTitle:'Create Animated QR', helpCreate1:'Choose a file up to 1 MiB. The hard limit is 1 MiB so the QR codes stay easier to scan with a camera.', helpCreate2:'For camera restore, use “Camera-first · 1 QR / frame” at 6 fps. A single larger, lower-density QR is much easier to scan from another screen.', helpCreate3:'Save the completed Animated WebP.', helpRestoreTitle:'Restore from Animated QR', helpRestore1:'On another device, display the Animated QR, start the camera, and align the whole QR carrier with the guide. You can also select the WebP file directly.', helpRestore2:'Camera restore keeps valid data blocks even before metadata is seen. Metadata is repeated about every two seconds, so you do not need to wait for the animation to loop back to the start.', helpRestore3:'When all chunks are present, SHA-256 is checked and the file can be saved only after a match.', helpPrivacyTitle:'Privacy', helpPrivacyBody:'Files, WebP images, and decoded data are processed only inside this browser. The app makes no runtime network connection.', helpNotesTitle:'Notes', helpNoteEncryption:'The generated Animated WebP contains the source data. It is not encrypted, so anyone with the WebP can reconstruct the file.', helpNoteSize:'The Animated WebP can be much larger than the source. This tool is intended for small files.', helpNoteCodec:'The output format is Animated WebP. Camera restore scans it from another device. Direct WebP file analysis requires ImageDecoder support.', helpNoteDrops:'If a QR frame is missed, scan the same WebP again to fill only the missing blocks.', helpOffline:'CRC32 checks each data block and SHA-256 verifies the final file. This is not an erasure-correction or encryption tool.',
           confirmTitle:'Confirm', confirmReplace:'Discard the current generated result and choose another source file?', confirmResetRestore:'Delete all chunks collected for the current restore session?', continueAction:'Continue', resetAction:'Reset',
           fileTooLarge:'The file is too large. Please keep it at 1 MiB or below.', unsupportedWebP:'This browser cannot encode WebP images.', unsupportedDecoder:'Animated WebP frame decoding is not supported in this browser.', unsupportedDecoderBody:'Use a browser with ImageDecoder support such as Chrome or Edge.', webpOnly:'Choose an Animated WebP (.webp) file.', dependencyError:'The embedded libraries could not be loaded. Make sure you opened the built HTML.', readyToGenerate:'Ready to generate', hashing:'Verifying the source file…', compressing:'Optimizing transfer size…', recording:'Generating QR frames', finalizing:'Finalizing Animated WebP…', generationCancelled:'Animated WebP generation cancelled.', generationFailed:'Animated WebP generation failed.', noSource:'Choose a source file first.',
@@ -628,8 +630,8 @@
       const cameraFrameCanvas = document.createElement('canvas');
       cameraFrameCanvas.width = FRAME_SIZE;
       cameraFrameCanvas.height = FRAME_SIZE;
-      let restoredBlob = null;
-      let restoredUrl = '';
+      let restoreGeneration = 0;
+      let verifiedRestore = null;
       const restoreState = { meta: null, chunks: [], accepted: 0, invalid: 0, passes: 0, endSeen: false, provisionalSession: '', provisionalChunks: new Map() };
 
       const AppConfirm = (() => {
@@ -712,6 +714,8 @@
         $('#startCameraButton').disabled = !librariesReady || cameraRunning || scanning;
         $('#stopCameraButton').hidden = !cameraRunning;
         $('#resetRestoreButton').disabled = !restoreState.meta && restoreState.accepted === 0;
+        $('#downloadRestoredButton').disabled = !verifiedRestore;
+        $('#downloadReceiptButton').disabled = !verifiedRestore;
       }
       function updateVideoCard() {
         $('#videoDropZone').hidden = Boolean(restoreVideoFile);
@@ -729,7 +733,8 @@
       }
       async function selectRestoreVideo(file, { preserve = false } = {}) {
         if (!file || (!/\.webp$/i.test(file.name) && file.type !== 'image/webp')) { showToast(t('webpOnly')); return false; }
-        if (!preserve && restoreState.accepted > 0) { const ok=await AppConfirm.ask({title:t('confirmTitle'),message:t('confirmResetRestore'),confirmLabel:t('resetAction'),cancelLabel:t('cancel'),tone:'danger'}); if(!ok) return false; resetRestoreState(false); }
+        if (!preserve && restoreState.accepted > 0) { const ok=await AppConfirm.ask({title:t('confirmTitle'),message:t('confirmResetRestore'),confirmLabel:t('resetAction'),cancelLabel:t('cancel'),tone:'danger'}); if(!ok) return false; }
+        if (!preserve) resetRestoreState(false);
         if (restoreVideoUrl) URL.revokeObjectURL(restoreVideoUrl);
         restoreVideoFile=file; restoreVideoUrl=URL.createObjectURL(file); const img=$('#restoreVideo'); setPreviewState('restore','none'); $('#restoreVideoWrap').hidden=false; img.src=restoreVideoUrl;
         updateVideoCard(); $('#restoreStatus').hidden=false; $('#restoreStatusTitle').textContent=t('scanPreparing'); $('#restoreStatusText').textContent=file.name; return true;
@@ -958,8 +963,9 @@
       function cancelGeneration(){ generationAbort=true; }
       function downloadBlob(blob,filename){ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000); }
       function resetRestoreState(showMessage = true) {
+        restoreGeneration += 1;
         scanToken += 1; scanning = false; restoreState.meta = null; restoreState.chunks = []; restoreState.accepted = 0; restoreState.invalid = 0; restoreState.passes = 0; restoreState.endSeen = false; restoreState.provisionalSession = ''; restoreState.provisionalChunks = new Map();
-        if (restoredUrl) URL.revokeObjectURL(restoredUrl); restoredBlob = null; restoredUrl = ''; $('#restoreResult').hidden = true; $('#restoreProgress').style.width = '0%'; $('#restoreStatusValue').textContent = '0%'; $('#acceptedCount').textContent = '0'; $('#missingCount').textContent = '—'; $('#invalidCount').textContent = '0'; $('#scanPassCount').textContent = '0'; updateRestoreControls();
+        verifiedRestore = null; $('#restoreResult').hidden = true; $('#restoreProgress').style.width = '0%'; $('#restoreStatusValue').textContent = '0%'; $('#acceptedCount').textContent = '0'; $('#missingCount').textContent = '—'; $('#invalidCount').textContent = '0'; $('#scanPassCount').textContent = '0'; updateRestoreControls();
         configureScanSpeedOptions();
         if (showMessage) showToast(t('resetDone'));
       }
@@ -1093,9 +1099,72 @@
         const payloads=jsqrWorkers.length===4?await Promise.all(scanTileCanvases.map((c,i)=>scanCanvasPayloadWorker(c,i))):scanTileCanvases.map(scanCanvasPayload);
         let any=false; for(const item of payloads)if(item&&acceptPayload(item))any=true; return any;
       }
-      async function verifyRestore(){
-        const meta=restoreState.meta;if(!meta||restoreState.accepted!==meta.total)return false; $('#restoreStatusTitle').textContent=t('scanComplete'); const totalLength=restoreState.chunks.reduce((sum,chunk)=>sum+(chunk?.length||0),0),result=new Uint8Array(totalLength);let offset=0;for(const chunk of restoreState.chunks){if(!chunk)return false;result.set(chunk,offset);offset+=chunk.length;} const transportBytes=result.subarray(0,meta.transportSize??meta.size);let finalBytes=transportBytes;
-        if(meta.compression==='gzip'){if(!('DecompressionStream'in window))throw new Error('Gzip decompression is not supported by this browser.');finalBytes=await gunzipBytes(transportBytes);} if(finalBytes.length!==meta.size){$('#restoreStatusTitle').textContent=t('hashMismatch');$('#restoreStatusText').textContent=`size ${finalBytes.length} / ${meta.size}`;return false;} const hash=await sha256Hex(finalBytes.buffer.slice(finalBytes.byteOffset,finalBytes.byteOffset+finalBytes.byteLength));if(hash.toLowerCase()!==meta.sha256.toLowerCase()){ $('#restoreStatusTitle').textContent=t('hashMismatch');$('#restoreStatusText').textContent=`expected ${meta.sha256.slice(0,16)}… / got ${hash.slice(0,16)}…`;return false;} restoredBlob=new Blob([finalBytes],{type:meta.mime||'application/octet-stream'});restoredUrl=URL.createObjectURL(restoredBlob);$('#restoreResultMeta').textContent=`${meta.name} · ${formatBytes(meta.size)} · ${t('verified')}`;$('#restoreResult').hidden=false;$('#restoreStatusTitle').textContent=t('restoreReady');$('#restoreStatusText').textContent=`SHA-256 ${hash.slice(0,20)}…`;$('#restoreProgress').style.width='100%';$('#restoreStatusValue').textContent='100%';if(cameraRunning)stopCamera({keepStatus:true});$('#restoreResult').scrollIntoView({behavior:'smooth',block:'nearest'});return true;
+      async function verifyRestore() {
+        const owner = restoreState.meta;
+        if (!owner || restoreState.accepted !== owner.total) return false;
+        const generation = restoreGeneration;
+        const isCurrent = () => generation === restoreGeneration && restoreState.meta === owner;
+        // Capture metadata and bytes before awaiting: later transfers cannot own this result.
+        const meta = { ...owner };
+        const filename = safeFilename(meta.name);
+        const chunks = restoreState.chunks.slice();
+        const totalLength = chunks.reduce((sum, chunk) => sum + (chunk?.length || 0), 0);
+        const result = new Uint8Array(totalLength);
+        let offset = 0;
+        for (const chunk of chunks) {
+          if (!chunk) return false;
+          result.set(chunk, offset); offset += chunk.length;
+        }
+        verifiedRestore = null; $('#restoreResult').hidden = true; updateRestoreControls();
+        $('#restoreStatusTitle').textContent = t('scanComplete');
+        const transportBytes = result.subarray(0, meta.transportSize ?? meta.size);
+        try {
+          let finalBytes = transportBytes;
+          if (meta.compression === 'gzip') {
+            if (!('DecompressionStream' in window)) throw new Error('Gzip decompression is not supported by this browser.');
+            finalBytes = await gunzipBytes(transportBytes);
+            if (!isCurrent()) return false;
+          }
+          if (finalBytes.length !== meta.size) {
+            $('#restoreStatusTitle').textContent = t('hashMismatch');
+            $('#restoreStatusText').textContent = `size ${finalBytes.length} / ${meta.size}`;
+            return false;
+          }
+          const hash = await sha256Hex(finalBytes.buffer.slice(finalBytes.byteOffset, finalBytes.byteOffset + finalBytes.byteLength));
+          if (!isCurrent()) return false;
+          if (hash.toLowerCase() !== meta.sha256.toLowerCase()) {
+            $('#restoreStatusTitle').textContent = t('hashMismatch');
+            $('#restoreStatusText').textContent = `expected ${meta.sha256.slice(0,16)}… / got ${hash.slice(0,16)}…`;
+            return false;
+          }
+          // Blob and frozen metadata are committed together; both exports read only this snapshot.
+          verifiedRestore = Object.freeze({
+            blob: new Blob([finalBytes], { type: meta.mime || 'application/octet-stream' }),
+            filename, sizeBytes: finalBytes.length, sha256: hash.toLowerCase(),
+            transport: Object.freeze({ compression: meta.compression || 'none', sizeBytes: transportBytes.length, blockCount: meta.total })
+          });
+          $('#restoreResultMeta').textContent = `${filename} · ${formatBytes(verifiedRestore.sizeBytes)} · ${t('verified')}`;
+          $('#restoreResult').hidden = false; updateRestoreControls();
+          $('#restoreStatusTitle').textContent = t('restoreReady');
+          $('#restoreStatusText').textContent = `SHA-256 ${hash.slice(0,20)}…`;
+          $('#restoreProgress').style.width = '100%'; $('#restoreStatusValue').textContent = '100%';
+          if (cameraRunning) stopCamera({ keepStatus:true });
+          $('#restoreResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+          return true;
+        } catch (error) {
+          // A late rejection must not reach the current scan's error/UI path.
+          if (!isCurrent()) return false;
+          throw error;
+        }
+      }
+      function verificationReceipt(result) {
+        return JSON.stringify({
+          schemaVersion: 1,
+          app: { name: APP_CONFIG.name, version: APP_CONFIG.version },
+          file: { name: result.filename, sizeBytes: result.sizeBytes, sha256: result.sha256 },
+          verification: { algorithm: 'SHA-256', status: 'matched' },
+          transport: result.transport
+        }, null, 2) + '\n';
       }
       function drawCameraFrame() {
         const video = $('#cameraVideo');
@@ -1281,7 +1350,8 @@
       $('#startCameraButton').addEventListener('click',startCamera); $('#stopCameraButton').addEventListener('click',() => stopCamera());
       $('#scanButton').addEventListener('click',startScan); $('#stopScanButton').addEventListener('click',stopScan);
       $('#resetRestoreButton').addEventListener('click',async () => { if (!restoreState.meta && restoreState.accepted === 0) { resetRestoreState(true); return; } const ok = await AppConfirm.ask({ title:t('confirmTitle'),message:t('confirmResetRestore'),confirmLabel:t('resetAction'),cancelLabel:t('cancel'),tone:'danger' }); if (ok) resetRestoreState(true); });
-      $('#downloadRestoredButton').addEventListener('click',() => { if (!restoredBlob || !restoreState.meta) return; downloadBlob(restoredBlob,safeFilename(restoreState.meta.name)); showToast(t('savedFile')); });
+      $('#downloadRestoredButton').addEventListener('click',() => { const result = verifiedRestore; if (!result) return; downloadBlob(result.blob,result.filename); showToast(t('savedFile')); });
+      $('#downloadReceiptButton').addEventListener('click',() => { const result = verifiedRestore; if (!result) return; downloadBlob(new Blob([verificationReceipt(result)], { type:'application/json' }),`${result.filename}.verification.json`); showToast(t('savedReceipt')); });
 
       applyLanguage(); updateSourceCard(); updateVideoCard(); updateEstimates(); loadLibraries();
       $('#exposureSlider').addEventListener('input',event => {
@@ -1289,7 +1359,7 @@
         clearTimeout(exposureApplyTimer);
         exposureApplyTimer = setTimeout(() => applyCameraExposure(event.target.value), 80);
       });
-      window.addEventListener('pagehide',() => { stopCamera({keepStatus:true}); destroyJsqrWorkers(); if (generatedUrl) URL.revokeObjectURL(generatedUrl); if (restoreVideoUrl) URL.revokeObjectURL(restoreVideoUrl); if (restoredUrl) URL.revokeObjectURL(restoredUrl); });
+      window.addEventListener('pagehide',() => { stopCamera({keepStatus:true}); destroyJsqrWorkers(); if (generatedUrl) URL.revokeObjectURL(generatedUrl); if (restoreVideoUrl) URL.revokeObjectURL(restoreVideoUrl); });
     })();
   </script>
 </body>

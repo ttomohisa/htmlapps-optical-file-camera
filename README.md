@@ -19,6 +19,7 @@ GitHub Pages delivers the initial HTML. After it loads, file reading, optional g
 - Convert a file up to **1 MiB** into an Animated QR WebP (`.webp`)
 - Restore the original file by pointing another device camera at the Animated QR
 - Restore directly from the generated WebP without using a camera
+- Save a local JSON verification receipt with the verified filename, byte size and complete SHA-256
 - Camera-first default: **1 QR per frame at 6 fps**
 - Optional faster mode with **4 QR codes per frame**
 - Low-luminance QR carrier to reduce screen bloom and overexposure when filming another display
@@ -85,6 +86,12 @@ The scanner can keep CRC-valid data blocks even before metadata is detected. Met
 4. When all blocks are collected and SHA-256 matches, save the reconstructed file.
 
 Direct Animated WebP analysis uses the browser `ImageDecoder` API. If the current browser does not provide it, use camera restore or a compatible Chromium-based browser.
+
+### Save a verification receipt
+
+After a successful restore, choose **Save verification receipt** beside **Save original file**. The `.verification.json` file records the sanitized output filename, actual size, full verified SHA-256, app version, compression and compact transport counts. Both downloads refer to the same verified result. Reset or choosing another WebP clears it; unfinished checks cannot revive the previous result.
+
+The receipt contains no file contents, QR data, camera data, session ID or history. Its filename and hash may still identify the file, so review it before sharing. A matching checksum is not encryption, authentication or a signed certificate. Receipts are created locally only when requested and are not retained by the app.
 
 ## Camera scanning tips
 
@@ -219,3 +226,7 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+## Automated restore regression checks
+
+Run `node --test scripts/restore-verification.test.cjs` with Node.js 22+ for synthetic, source-level restore/receipt tests. `scripts/check-repository.ps1` runs the same checks against source and generated readable HTML as well as the existing standalone/self-extract build verification. Node.js is required for this validation command; the ordinary standalone build and app runtime still need no Node.js installation. These tests do not exercise a browser, camera, QR pixels or actual optical transfer.
