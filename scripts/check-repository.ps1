@@ -105,8 +105,23 @@ if ([string]::IsNullOrWhiteSpace([string]$app.name)) { throw "app.config.json: n
 if ([string]::IsNullOrWhiteSpace([string]$app.slug)) { throw "app.config.json: slug is required" }
 if ([string]::IsNullOrWhiteSpace([string]$app.version)) { throw "app.config.json: version is required" }
 
+# Runtime regression tests use native Node.js crypto/compression, with synthetic bytes only.
+$null = Get-Command node -ErrorAction Stop
+$restoreTests = Join-Path $Root "scripts/restore-verification.test.cjs"
+& node --test $restoreTests
+if ($LASTEXITCODE -ne 0) { throw "Restore verification regression tests failed." }
+
 $buildArguments = @{}
 if ($ForceDownload) { $buildArguments.ForceDownload = $true }
 & (Join-Path $Root "build-standalone.ps1") @buildArguments
+
+$previousTestHtml = $env:OPTICAL_TEST_HTML
+try {
+  $env:OPTICAL_TEST_HTML = Join-Path $Root ([string]$app.build.output)
+  & node --test $restoreTests
+  if ($LASTEXITCODE -ne 0) { throw "Built HTML restore verification regression tests failed." }
+} finally {
+  $env:OPTICAL_TEST_HTML = $previousTestHtml
+}
 
 Write-Host "[OK] Repository check passed." -ForegroundColor Green

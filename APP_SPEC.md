@@ -36,6 +36,23 @@ The default playback rate is 6 fps. Generation does not wait for real-time playb
 5. Validate each block with CRC32.
 6. Reassemble, gunzip when needed, and validate the final bytes with SHA-256.
 
+## Verified result and local receipt
+
+After SHA-256 matches the reconstructed bytes, offer **Save original file** and a secondary **Save verification receipt** action. Both exports use one immutable verified-result snapshot: Blob, sanitized output filename, actual byte length, complete actual SHA-256, compression, transport byte count and block count. Reset or accepted replacement invalidates the result; delayed decompression/hash success, mismatch or rejection cannot restore old results or alter a newer transfer's UI.
+
+The explicit receipt download is `<sanitized-output-name>.verification.json`, UTF-8 JSON with stable `schemaVersion: 1` and these fields:
+
+- `app`: configured `name` and `version`
+- `file`: sanitized download `name`, actual `sizeBytes`, and full lowercase `sha256`
+- `verification`: `algorithm: "SHA-256"`, `status: "matched"`
+- `transport`: `compression`, `sizeBytes`, and `blockCount`
+
+No source bytes, QR payloads, session IDs, paths, camera data, timestamps or history are included. Repeated exports are deterministic; language changes affect UI only. Metadata can identify a file, so the result and help warn users to review before sharing. A checksum match is not encryption, authentication or a signed certificate. No receipt import, clipboard, storage, network or permission is added.
+
+### Regression coverage
+
+`node --test scripts/restore-verification.test.cjs` tests actual extracted application functions with synthetic bytes and native crypto/compression. The repository check requires Node.js 22+ for this suite, tests source and built HTML, and builds/verifies both standalone variants. Coverage includes delayed success/error after reset/replacement, ownership after a newer result, compact and legacy payloads, reordered/duplicate/missing/pre-metadata blocks, CRC/SHA rejection, gzip, empty files, the 1 MiB boundary, receipt fields and bilingual help. Browser, keyboard, mobile, offline-runtime, camera and optical-transfer QA remain separate from these source-level tests.
+
 ## Limits
 
 - Source hard limit: 1 MiB
