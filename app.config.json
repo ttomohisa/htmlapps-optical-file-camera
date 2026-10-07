@@ -3,7 +3,7 @@
   "name": "Optical File",
   "nameJa": "Optical File",
   "slug": "optical-file",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Turn files up to 1 MiB into low-glare, camera-friendly animated QR WebP images and restore them with another device camera or directly from the WebP, entirely in the browser.",
   "descriptionJa": "1 MiB以下の小さなファイルを、白飛びを抑えたカメラ向け連続QRのAnimated WebPへ変換し、別端末のカメラまたはWebP直接解析で元のファイルへ復元するローカル処理ツールです。",
   "defaultLanguage": "auto",
