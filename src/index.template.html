@@ -184,6 +184,7 @@
     .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: min(380px,calc(100vw - 36px)); padding: 11px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .18s ease,transform .18s ease; }
     .toast.show { opacity: 1; transform: translateY(0); }
     dialog { width: min(650px,calc(100% - 28px)); max-height: min(780px,calc(100dvh - 28px)); padding: 0; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--text); box-shadow: var(--shadow-md); }
+    dialog:not([open]) { display: none; }
     dialog::backdrop { background: rgba(15,17,14,.52); backdrop-filter: blur(4px); }
     .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
     .dialog-header h2 { margin: 0; font-size: 17px; }
@@ -253,12 +254,12 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3Zm2 2v3h3V5H5Zm9-2h7v7h-7V3Zm2 2v3h3V5h-3ZM3 14h7v7H3v-7Zm2 2v3h3v-3H5Zm9-2h3v3h-3v-3Zm4 0h3v3h-3v-3Zm-4 4h3v3h-3v-3Zm4 0h3v3h-3v-3Z"/></svg>
         </div>
         <div class="brand-copy">
-          <p class="brand-name"><span id="brandName">Optical File</span><span class="version-badge" id="versionBadge">v1.0.0</span></p>
+          <p class="brand-name"><span id="brandName">Optical File</span><span class="version-badge" id="versionBadge">v1.0.1</span></p>
           <p class="brand-meta" data-i18n="brandMeta">ファイルをAnimated QRにする</p>
         </div>
       </div>
       <div class="header-actions">
-        <button class="language-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
+        <button class="language-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
         <button class="header-icon-button" id="helpButton" type="button" data-i18n-title="helpTitle" data-i18n-aria-label="helpTitle" title="使い方と注意事項" aria-label="使い方と注意事項">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.35 2.35 0 1 1 3.72 1.9c-.92.67-1.52 1.12-1.52 2.1"/><path d="M12 17h.01"/></svg>
         </button>
@@ -274,7 +275,7 @@
       </div>
       <div class="local-badge">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></svg>
-        <span data-i18n="localBadge">ファイルを送信しません</span>
+        <span data-i18n="localBadge">完全ローカル処理</span>
       </div>
     </section>
 
@@ -571,7 +572,7 @@
 
       const translations = {
         ja: {
-          brandMeta:'ファイルをAnimated QRにする', helpTitle:'使い方と注意事項', close:'閉じる', introTitle:'ファイルを、動くQRにする。', lead:'ファイルを連続QRへ変換してAnimated WebPとして保存。別端末のカメラで読み取るか、WebPを直接解析して元のファイルへ復元できます。', localBadge:'ファイルを送信しません',
+          brandMeta:'ファイルをAnimated QRにする', helpTitle:'使い方と注意事項', close:'閉じる', introTitle:'ファイルを、動くQRにする。', lead:'ファイルを連続QRへ変換してAnimated WebPとして保存。別端末のカメラで読み取るか、WebPを直接解析して元のファイルへ復元できます。', localBadge:'完全ローカル処理',
           createTab:'Animated QRを作る', restoreTab:'Animated QRから復元', createTitle:'Animated QRを作る', createBody:'最大1 MiBのファイルを、画面撮影で読み取りやすい低輝度・低密度QRへ変換し、1つのAnimated WebPとして保存します。', sourceDropTitle:'ファイルを選択', sourceDropBody:'またはここへドロップ · 最大1 MiB', replaceFile:'別のファイル', layoutLabel:'転送方式', fastMode:'速度優先 · 4 QR / frame', compatMode:'カメラ優先 · 1 QR / frame', fpsLabel:'フレームレート', chunksLabel:'データブロック', framesLabel:'データフレーム', durationLabel:'目安時間', outputLabel:'WebPサイズ目安', largeSourceWarning:'512 KiBを超えるとフレーム数がかなり増えます。カメラ復元を優先してQRを大きめにしているため、1 MiB以下限定です。', generate:'Animated WebPを生成', cancel:'キャンセル', videoReady:'Animated QRを作成しました', downloadVideo:'WebPを保存', fullscreenQr:'QRを全画面表示', testRestore:'このWebPを復元テスト', technicalTitle:'技術情報', chunkCheck:'チャンク検証', fileCheck:'ファイル検証',
           restoreTitle:'Animated QRから元のファイルを復元', restoreBody:'別端末に表示したAnimated QRをカメラで読み取るか、WebPを直接読み込んで復元します。', cameraTitle:'カメラで読み取る', cameraBody:'別の端末でAnimated QRを表示し、QR全体が枠に入るようにカメラを向けてください。取得済みブロックは自動で蓄積します。', startCamera:'カメラを開始', stopCamera:'カメラを停止', cameraAlign:'QR全体を枠に合わせてください', exposureLabel:'露出補正', exposureHint:'画面が白く光る場合は、左へ動かすと白飛びを抑えられます。', orWebp:'またはWebPファイルから', videoDropTitle:'Animated WebPを選択', videoDropBody:'またはここへドロップ · .webp', replaceVideo:'別のWebP', scanSpeedLabel:'解析速度', scanReliable:'確実 · 1×', scanFast:'高速 · 2×', scanTurbo:'ターボ · 3×', rescanLabel:'取りこぼしたとき', rescanBody:'カメラでは画面を向け続けると不足分を自動補完します。WebP解析では同じファイルを再解析できます。', decodeModeLabel:'高速解析', decodeModeBody:'Animated WebPのフレームを表示時間を待たずに直接解析します。', startScan:'WebPを解析', stopScan:'停止', resetRestore:'復元状態をリセット', acceptedLabel:'取得済み', missingLabel:'不足', invalidLabel:'破損フレーム', passLabel:'解析回数', restoreReady:'元のファイルを復元しました', downloadRestored:'元のファイルを保存', downloadReceipt:'検証記録を保存', receiptPrivacy:'検証記録にはファイル名・サイズ・SHA-256が含まれ、ファイルを特定できる場合があります。共有前に内容を確認してください。', savedReceipt:'検証記録を保存しました。', helpReceipt:'復元に成功したら「検証記録を保存」でJSONを保存できます。元ファイルのデータは含まず、ファイル名・サイズ・完全なSHA-256と転送情報を記録します。ファイルを特定できる場合があるため、共有前に確認してください。チェックサム一致は暗号化・認証・署名付き証明書ではありません。リセットや別のWebPへの切り替えで現在の結果は消去され、再検証が必要です。', footer:'QR Tape · Animated QR / WebP · ローカル処理', previewUnavailable:'プレビューを表示できません', generatedPreviewFallbackBody:'WebPは生成済みです。保存や復元テストはそのまま利用できます。', restorePreviewFallbackBody:'画像表示に対応していない場合でも、WebPの直接解析はそのまま利用できます。',
           helpCreateTitle:'Animated QRを作る', helpCreate1:'「Animated QRを作る」で1 MiB以下のファイルを選びます。カメラ復元しやすいよう、上限自体を1 MiBにしています。', helpCreate2:'通常は「カメラ優先・1 QR / frame」「6 fps」がおすすめです。1枚のQRを大きく粗くして、画面撮影で読み取りやすくしています。', helpCreate3:'完成したAnimated WebPを保存します。', helpRestoreTitle:'Animated QRから復元', helpRestore1:'別端末でAnimated QRを表示して「カメラを開始」を押し、QR全体を枠に合わせます。WebPファイルを直接選んで解析することもできます。', helpRestore2:'カメラ読み取りではデータQRをメタデータより先に拾っても仮保存します。メタデータQRも約2秒ごとに再表示されるため、先頭を待つ必要はありません。', helpRestore3:'すべて揃うとSHA-256で検証し、一致した場合だけ元ファイルを保存できます。', helpPrivacyTitle:'プライバシー', helpPrivacyBody:'ファイル、WebP、解析結果はこのブラウザー内だけで処理されます。このアプリは実行時にネットワーク接続しません。', helpNotesTitle:'注意事項', helpNoteEncryption:'生成したAnimated WebPには元ファイルのデータが入っています。暗号化はしていないため、WebPを持つ人は元ファイルを復元できます。', helpNoteSize:'QRを読み取りやすくするため、1 MiB以下の小さなファイル専用です。Animated WebPは元ファイルよりかなり大きくなる場合があります。', helpNoteCodec:'出力はAnimated WebPです。カメラ復元では別端末に表示して読み取れます。WebPファイルを直接解析する場合はImageDecoder対応ブラウザーが必要です。', helpNoteDrops:'QRの読み取りに失敗したフレームがあっても、同じWebPを再解析すると不足分だけ補完できます。', helpOffline:'CRC32で各データブロックを、SHA-256で復元ファイル全体を検証します。ただし欠落訂正や暗号化を行うツールではありません。',
@@ -683,8 +684,9 @@
         $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
         $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
         $$('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel)); });
-        $('#languageButton').textContent = language === 'ja' ? 'EN' : '日本語';
+        $('#languageButton').textContent = language === 'ja' ? 'EN' : 'JA';
         $('#languageButton').setAttribute('aria-label', language === 'ja' ? '英語に切り替え' : 'Switch to Japanese');
+        $('#languageButton').title = language === 'ja' ? '英語に切り替え' : 'Switch to Japanese';
         document.title = APP_CONFIG.name;
         $('#brandName').textContent = APP_CONFIG.name;
         $('#footerName').textContent = APP_CONFIG.name;

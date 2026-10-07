@@ -64,6 +64,12 @@ No source bytes, QR payloads, session IDs, paths, camera data, timestamps or his
 
 None.
 
+## Header language controls
+
+The compact language button shows the destination language as `EN` in Japanese and `JA` in English. Its accessible name and tooltip describe that action in the current UI language. Help and its close button remain localized. The existing Japanese privacy badge reads `完全ローカル処理`; the English badge remains `No file upload`.
+
+Closed Help and confirmation dialogs remain hidden on initial load and after dismissal. Their open state keeps the existing flex layout and native modal/focus behavior.
+
 
 ## Camera-first carrier
 

@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## v1.0.1
+
+- Standardize the header language switch to EN / JA with localized target-language labels and tooltips.
+- Use 完全ローカル処理 for the existing Japanese local-processing badge; retain the English no-upload message and bilingual privacy guidance.
+- Add header regression coverage for repeated language changes, localized Help controls and the configured version.
+- Keep closed Help and confirmation dialogs hidden instead of rendering them inline below the page; retain the existing open-modal layout and native controls.
 
 - Add an explicit local JSON verification receipt for the current restored file, including its sanitized filename, actual byte size and full verified SHA-256.
 - Keep original-file and receipt downloads bound to one immutable result; ignore obsolete SHA-256/gzip completions and failures after reset or replacement.

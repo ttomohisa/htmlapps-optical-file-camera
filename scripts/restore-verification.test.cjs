@@ -145,3 +145,85 @@ test('receipt uses the configured application identity, not hard-coded version t
 test('complete inline application scripts parse',()=>{
   for(const match of source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)){if(/type=["'](?:application\/json|application\/octet-stream)["']/.test(match[0].slice(0,match[0].indexOf('>'))))continue;new vm.Script(match[1]);}
 });
+
+// Real translation functions and click handler, with a minimal DOM. No browser/device claim.
+function headerHarness(initialLanguage) {
+  const elements = new Map(), stored = new Map();
+  for (const match of source.matchAll(/<[a-z][^>]*\bid="([^"]+)"[^>]*>/gi)) {
+    const attrs = Object.fromEntries([...match[0].matchAll(/([\w-]+)="([^"]*)"/g)].map(a => [a[1], a[2]]));
+    elements.set('#' + match[1], {
+      attrs, title: attrs.title || '', textContent: '',
+      dataset: Object.fromEntries(Object.entries(attrs).filter(([k]) => k.startsWith('data-')).map(([k,v]) => [k.slice(5).replace(/-([a-z])/g, (_,c) => c.toUpperCase()), v])),
+      setAttribute(k,v) { this.attrs[k] = String(v); },
+      addEventListener(k,fn) { this[k] = fn; }
+    });
+  }
+  const $ = selector => { assert(elements.has(selector), selector); return elements.get(selector); };
+  const context = vm.createContext({
+    language: initialLanguage, APP_CONFIG: config, $, document: {documentElement: {}},
+    $$: selector => [...elements.values()].filter(el => Object.hasOwn(el.attrs, selector.slice(1,-1))),
+    writeStorage: (key,value) => stored.set(key,value),
+    updateSourceCard(){}, updateVideoCard(){}, updateRestoreStatus(){}, updateEstimates(){}
+  });
+  vm.runInContext([
+    section('      const translations =', '      const $ ='),
+    section('      function t(key)', '      function showToast('),
+    section('      function applyLanguage()', '      function setMode('),
+    ...source.split('\n').filter(line => /\$\('#languageButton'\)\.addEventListener/.test(line)),
+    'applyLanguage();'
+  ].join('\n'), context);
+  return {$, context, stored};
+}
+for (const initialLanguage of ['ja','en']) test(`header target language stays localized after repeated switches from ${initialLanguage}`,()=>{
+  const h=headerHarness(initialLanguage);
+  for(let i=0;i<5;i++) {
+    const language=h.context.language, button=h.$('#languageButton');
+    const target=language==='ja'?'英語に切り替え':'Switch to Japanese';
+    assert.equal(button.textContent,language==='ja'?'EN':'JA');
+    assert.equal(button.attrs['aria-label'],target);
+    assert.equal(button.title,target);
+    assert.equal(h.context.document.documentElement.lang,language);
+    const help=language==='ja'?'使い方と注意事項':'How to use & notes';
+    assert.equal(h.$('#helpButton').title,help);
+    assert.equal(h.$('#helpButton').attrs['aria-label'],help);
+    assert.equal(h.$('#closeHelpButton').title,language==='ja'?'閉じる':'Close');
+    assert.equal(h.$('#closeHelpButton').attrs['aria-label'],language==='ja'?'閉じる':'Close');
+    button.click();
+    assert.equal(h.stored.get(`${config.slug}:language`),h.context.language);
+  }
+});
+test('local-processing badge is accurate and Japanese fallback matches the translated copy',()=>{
+  const h=headerHarness('ja');
+  assert.equal(vm.runInContext("t('localBadge')",h.context),'完全ローカル処理');
+  assert.match(source,/<span data-i18n="localBadge">完全ローカル処理<\/span>/);
+  h.$('#languageButton').click();
+  assert.equal(vm.runInContext("t('localBadge')",h.context),'No file upload');
+  assert.match(source,/connect-src 'none'/);
+});
+test('static header fallback matches the configured patch and localized target action',()=>{
+  assert.match(source,new RegExp(`id="versionBadge">v${config.version.replaceAll('.','\\.')}</span>`));
+  const h=headerHarness('ja');
+  assert.equal(h.$('#languageButton').attrs['aria-label'],'英語に切り替え');
+  assert.match(source,/<button[^>]*id="languageButton"[^>]*title="英語に切り替え"[^>]*>EN<\/button>/);
+});
+
+test('closed Help and confirmation dialogs have an explicit author-style visibility guard',()=>{
+  const style = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)[1];
+  const guard = [...style.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .find(rule => rule[1].trim() === 'dialog:not([open])');
+  assert(guard, 'The shared dialog display:flex rule needs a closed-state override');
+  assert.match(guard[2], /(?:^|;)\s*display\s*:\s*none\s*(?:;|$)/);
+  for (const id of ['helpDialog', 'appConfirmDialog']) {
+    const tag = source.match(new RegExp(`<dialog\\b[^>]*\\bid="${id}"[^>]*>`))[0];
+    assert.doesNotMatch(tag, /\sopen(?:\s|=|>)/);
+  }
+});
+test('open native dialogs retain their existing flex layout and modal handlers',()=>{
+  const style = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)[1];
+  const base = [...style.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .find(rule => rule[1].trim() === 'dialog');
+  assert.match(base[2], /(?:^|;)\s*display\s*:\s*flex\s*(?:;|$)/);
+  assert.match(source, /helpDialog\.showModal\(\)/);
+  assert.match(source, /helpDialog\.close\(\)/);
+  assert.match(section('      const AppConfirm', '      window.AppConfirm'), /dialog\.showModal\(\)/);
+});
