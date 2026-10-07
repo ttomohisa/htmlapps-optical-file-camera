@@ -184,6 +184,7 @@
     .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: min(380px,calc(100vw - 36px)); padding: 11px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .18s ease,transform .18s ease; }
     .toast.show { opacity: 1; transform: translateY(0); }
     dialog { width: min(650px,calc(100% - 28px)); max-height: min(780px,calc(100dvh - 28px)); padding: 0; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--text); box-shadow: var(--shadow-md); }
+    dialog:not([open]) { display: none; }
     dialog::backdrop { background: rgba(15,17,14,.52); backdrop-filter: blur(4px); }
     .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
     .dialog-header h2 { margin: 0; font-size: 17px; }

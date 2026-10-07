@@ -206,3 +206,24 @@ test('static header fallback matches the configured patch and localized target a
   assert.equal(h.$('#languageButton').attrs['aria-label'],'英語に切り替え');
   assert.match(source,/<button[^>]*id="languageButton"[^>]*title="英語に切り替え"[^>]*>EN<\/button>/);
 });
+
+test('closed Help and confirmation dialogs have an explicit author-style visibility guard',()=>{
+  const style = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)[1];
+  const guard = [...style.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .find(rule => rule[1].trim() === 'dialog:not([open])');
+  assert(guard, 'The shared dialog display:flex rule needs a closed-state override');
+  assert.match(guard[2], /(?:^|;)\s*display\s*:\s*none\s*(?:;|$)/);
+  for (const id of ['helpDialog', 'appConfirmDialog']) {
+    const tag = source.match(new RegExp(`<dialog\\b[^>]*\\bid="${id}"[^>]*>`))[0];
+    assert.doesNotMatch(tag, /\sopen(?:\s|=|>)/);
+  }
+});
+test('open native dialogs retain their existing flex layout and modal handlers',()=>{
+  const style = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)[1];
+  const base = [...style.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .find(rule => rule[1].trim() === 'dialog');
+  assert.match(base[2], /(?:^|;)\s*display\s*:\s*flex\s*(?:;|$)/);
+  assert.match(source, /helpDialog\.showModal\(\)/);
+  assert.match(source, /helpDialog\.close\(\)/);
+  assert.match(section('      const AppConfirm', '      window.AppConfirm'), /dialog\.showModal\(\)/);
+});
