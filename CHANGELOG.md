@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2026-10-09
+
+- Add a real English catalog screenshot and use it in the English README, preserving app behavior and the supplied icon.
+
 ## v1.0.1
 
 - Standardize the header language switch to EN / JA with localized target-language labels and tooltips.

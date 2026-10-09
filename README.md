@@ -14,6 +14,8 @@ A privacy-focused, single-HTML app that turns a small file into an **Animated QR
 
 GitHub Pages delivers the initial HTML. After it loads, file reading, optional gzip compression, QR generation, Animated WebP creation, camera scanning, reconstruction, CRC32 checks, and SHA-256 verification are processed locally on your device. The selected files and camera frames are not uploaded by the app.
 
+[![Optical File in English with a generated animated QR](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-optical-file-camera/)
+
 ## Features
 
 - Convert a file up to **1 MiB** into an Animated QR WebP (`.webp`)
