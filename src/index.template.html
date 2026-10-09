@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f5f5f2">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Optical File</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231c6b5a'/%3E%3Cg fill='white'%3E%3Cpath d='M14 14h14v14H14zm4 4v6h6v-6zM36 14h14v14H36zm4 4v6h6v-6zM14 36h14v14H14zm4 4v6h6v-6z'/%3E%3Cpath d='M36 36h5v5h-5zm9 0h5v5h-5zm-9 9h5v5h-5zm6-3h5v5h-5zm5 5h3v3h-3z'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxNjYyNGYiLz4KICA8ZyBmaWxsPSIjZmZmIj4KICAgIDxwYXRoIGQ9Ik0xNCAxNGgxNHYxNEgxNHptNCA0djZoNnYtNnpNMzYgMTRoMTR2MTRIMzZ6bTQgNHY2aDZ2LTZ6TTE0IDM2aDE0djE0SDE0em00IDR2Nmg2di02eiIvPgogICAgPHBhdGggZD0iTTM2IDM2aDV2NWgtNXptOSAwaDV2NWgtNXptLTkgOWg1djVoLTV6bTYtM2g1djVoLTV6bTUgNWgzdjNoLTN6Ii8+CiAgPC9nPgo8L3N2Zz4K">
   <style>
     :root {
       color-scheme: light;
@@ -50,8 +50,8 @@
     }
     .header-inner { width: min(1100px,100%); min-height: var(--header-height); margin: 0 auto; padding: 10px clamp(14px,2.8vw,30px); display: flex; align-items: center; gap: 14px; }
     .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 11px; background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
-    .brand-mark svg { width: 21px; height: 21px; display: block; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius:25%; background:transparent; color: #fff; box-shadow: var(--shadow-sm); }
+    .brand-mark svg { width:100%; height:100%; display: block; }
     .brand-copy { min-width: 0; }
     .brand-name { margin: 0; font-size: 17px; line-height: 1.2; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .version-badge { display: inline-flex; align-items: center; margin-left: 7px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface-muted); font-size: 10px; font-weight: 650; vertical-align: 2px; }
@@ -220,7 +220,7 @@
     @media (max-width: 540px) {
       :root { --header-height: 58px; }
       .header-inner { padding-block: 8px; }
-      .brand-mark { width: 34px; height: 34px; border-radius: 10px; }
+      .brand-mark { width: 34px; height: 34px; border-radius:25%; }
       .brand-name { font-size: 15px; }
       .brand-meta { display: none; }
       .main { padding-top: 17px; }
@@ -251,10 +251,16 @@
     <div class="header-inner">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3Zm2 2v3h3V5H5Zm9-2h7v7h-7V3Zm2 2v3h3V5h-3ZM3 14h7v7H3v-7Zm2 2v3h3v-3H5Zm9-2h3v3h-3v-3Zm4 0h3v3h-3v-3Zm-4 4h3v3h-3v-3Zm4 0h3v3h-3v-3Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#16624f"/>
+  <g fill="#fff">
+    <path d="M14 14h14v14H14zm4 4v6h6v-6zM36 14h14v14H36zm4 4v6h6v-6zM14 36h14v14H14zm4 4v6h6v-6z"/>
+    <path d="M36 36h5v5h-5zm9 0h5v5h-5zm-9 9h5v5h-5zm6-3h5v5h-5zm5 5h3v3h-3z"/>
+  </g>
+</svg>
         </div>
         <div class="brand-copy">
-          <p class="brand-name"><span id="brandName">Optical File</span><span class="version-badge" id="versionBadge">v1.0.2</span></p>
+          <p class="brand-name"><span id="brandName">Optical File</span><span class="version-badge" id="versionBadge">v1.0.3</span></p>
           <p class="brand-meta" data-i18n="brandMeta">ファイルをAnimated QRにする</p>
         </div>
       </div>
