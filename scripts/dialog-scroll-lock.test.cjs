@@ -54,15 +54,15 @@ test('Help and confirmation retain native opening, dismissal and confirmation fo
   assert.match(confirm, /restoreFocus\.focus\(\{ preventScroll: true \}\)/);
 });
 
-test('Help explains scroll isolation and dismissal in Japanese and English', () => {
+test('Help explains dismissal without scroll audit prose', () => {
   const translations = vm.runInNewContext(section('      const translations =', '      const $ =') + '\ntranslations;');
   const help = section('<!-- APP:HELP:BEGIN -->', '<!-- APP:HELP:END -->');
   const fallback = help.match(/<p data-i18n="helpDialogs">([^<]+)<\/p>/);
   assert(fallback, 'The new Help guidance must appear in the real Help body');
   assert.equal(fallback[1], translations.ja.helpDialogs);
-  assert.match(translations.ja.helpDialogs, /背景.*スクロール/);
+  assert.doesNotMatch(translations.ja.helpDialogs, /背景.*スクロール/);
   assert.match(translations.ja.helpDialogs, /閉じる.*Esc.*背景/);
-  assert.match(translations.en.helpDialogs, /background page.*scroll/i);
+  assert.doesNotMatch(translations.en.helpDialogs, /background page.*scroll/i);
   assert.match(translations.en.helpDialogs, /Close.*Esc.*backdrop/);
 });
 
