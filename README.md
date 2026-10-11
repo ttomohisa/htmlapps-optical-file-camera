@@ -58,6 +58,10 @@ Python, Node.js, and a local web server are not required. The builder uses Windo
 
 ## Usage
 
+### Help and confirmation dialogs
+
+Opening Help or a confirmation stops background-page scrolling until all dialogs close. Scroll inside Help to read the full text, then use Close, Esc, or the backdrop to dismiss it and return to the page.
+
 ### Create an Animated QR
 
 1. Open **Create Animated QR**.
@@ -232,3 +236,5 @@ Licensed under the [MIT License](LICENSE).
 ## Automated restore regression checks
 
 Run `node --test scripts/restore-verification.test.cjs` with Node.js 22+ for synthetic, source-level restore/receipt tests. `scripts/check-repository.ps1` runs the same checks against source and generated readable HTML as well as the existing standalone/self-extract build verification. Node.js is required for this validation command; the ordinary standalone build and app runtime still need no Node.js installation. These tests do not exercise a browser, camera, QR pixels or actual optical transfer.
+
+Run `node --test scripts/dialog-scroll-lock.test.cjs` for structural dialog scroll-lock, dismissal, shield and bilingual Help guards. Set `OPTICAL_TEST_HTML` to check an existing readable or self-extracting HTML. The canonical checker runs these guards on source and both generated variants; native scrolling, viewport geometry and focus still need browser QA.

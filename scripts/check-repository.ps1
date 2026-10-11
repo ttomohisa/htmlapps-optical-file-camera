@@ -20,6 +20,7 @@ $required = @(
   "scripts\build-self-extract.ps1",
   "scripts\verify-standalone.ps1",
   "scripts\verify-self-extract.ps1",
+  "scripts\dialog-scroll-lock.test.cjs",
   "README.md",
   "README.ja.md",
   "LICENSE",
@@ -108,18 +109,25 @@ if ([string]::IsNullOrWhiteSpace([string]$app.version)) { throw "app.config.json
 # Runtime regression tests use native Node.js crypto/compression, with synthetic bytes only.
 $null = Get-Command node -ErrorAction Stop
 $restoreTests = Join-Path $Root "scripts/restore-verification.test.cjs"
-& node --test $restoreTests
-if ($LASTEXITCODE -ne 0) { throw "Restore verification regression tests failed." }
-
-$buildArguments = @{}
-if ($ForceDownload) { $buildArguments.ForceDownload = $true }
-& (Join-Path $Root "build-standalone.ps1") @buildArguments
-
+$dialogTests = Join-Path $Root "scripts/dialog-scroll-lock.test.cjs"
 $previousTestHtml = $env:OPTICAL_TEST_HTML
 try {
+  $env:OPTICAL_TEST_HTML = Join-Path $Root "src/index.template.html"
+  & node --test $restoreTests $dialogTests
+  if ($LASTEXITCODE -ne 0) { throw "Source restore/dialog regression tests failed." }
+
+  $buildArguments = @{}
+  if ($ForceDownload) { $buildArguments.ForceDownload = $true }
+  & (Join-Path $Root "build-standalone.ps1") @buildArguments
+
   $env:OPTICAL_TEST_HTML = Join-Path $Root ([string]$app.build.output)
-  & node --test $restoreTests
-  if ($LASTEXITCODE -ne 0) { throw "Built HTML restore verification regression tests failed." }
+  & node --test $restoreTests $dialogTests
+  if ($LASTEXITCODE -ne 0) { throw "Built HTML restore/dialog regression tests failed." }
+  if ($app.build.selfExtract.enabled) {
+    $env:OPTICAL_TEST_HTML = Join-Path $Root ([string]$app.build.selfExtract.output)
+    & node --test $dialogTests
+    if ($LASTEXITCODE -ne 0) { throw "Self-extract HTML dialog regression tests failed." }
+  }
 } finally {
   $env:OPTICAL_TEST_HTML = $previousTestHtml
 }

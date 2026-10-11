@@ -68,7 +68,9 @@ None.
 
 The compact language button shows the destination language as `EN` in Japanese and `JA` in English. Its accessible name and tooltip describe that action in the current UI language. Help and its close button remain localized. The existing Japanese privacy badge reads `完全ローカル処理`; the English badge remains `No file upload`.
 
-Closed Help and confirmation dialogs remain hidden on initial load and after dismissal. Their open state keeps the existing flex layout and native modal/focus behavior.
+Closed Help and confirmation dialogs remain hidden on initial load and after dismissal. While either dialog is open, a shared CSS rule locks scrolling on both the document root and body; the lock ends automatically when all dialogs close. Help keeps its independently scrollable body, existing flex layout, close button, native Escape/backdrop dismissal and focus behavior. Reopening a dialog must lock the background again without changing file, camera or restore state.
+
+`node --test scripts/dialog-scroll-lock.test.cjs` checks these structural CSS, dismissal, shield and bilingual Help contracts. `OPTICAL_TEST_HTML` selects an alternate readable or self-extracting HTML without rewriting it. The canonical checker runs the guards on source and both generated variants. Native wheel/touch, short-viewport reachability and focus behavior still require browser QA.
 
 
 ## Camera-first carrier
