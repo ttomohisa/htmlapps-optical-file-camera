@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4 - 2026-10-11
+
+- Stop background-page scrolling while Help or confirmation dialogs are open, retaining the existing dialog layout, internal Help scrolling and native dismissal/focus behavior.
+- Document dialog operation in Japanese and English Help/README, and add source/readable/self-extract structural regression checks to repository validation.
+
 ## 1.0.3 - 2026-10-09
 
 - Normalize the app icon background to `#16624f` with 25% corner radii, and keep the asset, header and favicon consistent without changing the artwork.
