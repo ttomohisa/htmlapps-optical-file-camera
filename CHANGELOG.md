@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Hide only the informational page footer at the existing 540px phone breakpoint. Preserve functional controls, header version, privacy distinctions, and all other responsive boundaries. The equivalent English local-processing badge reads `Fully local processing`.
+
+
 - Clarify Japanese and English help by removing internal layout, implementation, and audit commentary while preserving usage guidance and cautions.
 
 ## 1.0.4 - 2026-10-11

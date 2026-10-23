@@ -66,7 +66,7 @@ None.
 
 ## Header language controls
 
-The compact language button shows the destination language as `EN` in Japanese and `JA` in English. Its accessible name and tooltip describe that action in the current UI language. Help and its close button remain localized. The existing Japanese privacy badge reads `完全ローカル処理`; the English badge remains `No file upload`.
+The compact language button shows the destination language as `EN` in Japanese and `JA` in English. Its accessible name and tooltip describe that action in the current UI language. Help and its close button remain localized. The existing Japanese privacy badge reads `完全ローカル処理`; the equivalent English badge reads `Fully local processing`.
 
 Closed Help and confirmation dialogs remain hidden on initial load and after dismissal. While either dialog is open, a shared CSS rule locks scrolling on both the document root and body; the lock ends automatically when all dialogs close. Help keeps its independently scrollable body, existing flex layout, close button, native Escape/backdrop dismissal and focus behavior. Reopening a dialog must lock the background again without changing file, camera or restore state.
 
@@ -76,3 +76,7 @@ Closed Help and confirmation dialogs remain hidden on initial load and after dis
 ## Camera-first carrier
 
 The default carrier uses one lower-density QR per frame on a low-luminance gray background. Camera exposure compensation is applied when supported.
+
+## Shared phone layout
+
+Hide only the informational page footer at the existing 540px phone breakpoint. Preserve functional controls, header version, privacy distinctions, and all other responsive boundaries. The equivalent English local-processing badge reads `Fully local processing`.
