@@ -70,7 +70,7 @@ test('local-processing badge retains its existing shield and no-upload copy', ()
   const badge = html.match(/<div class="local-badge">([\s\S]*?)<\/div>/)[1];
   assert.match(badge, /<path d="M12 3 5 6v5c0 4\.6 2\.8 8 7 10 4\.2-2 7-5\.4 7-10V6z"/);
   assert.match(badge, /<span data-i18n="localBadge">完全ローカル処理<\/span>/);
-  assert.match(html, /localBadge:'No file upload'/);
+  assert.match(html, /localBadge:'Fully local processing'/);
   assert.match(html, /connect-src 'none'/);
 });
 

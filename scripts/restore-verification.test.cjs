@@ -197,7 +197,7 @@ test('local-processing badge is accurate and Japanese fallback matches the trans
   assert.equal(vm.runInContext("t('localBadge')",h.context),'完全ローカル処理');
   assert.match(source,/<span data-i18n="localBadge">完全ローカル処理<\/span>/);
   h.$('#languageButton').click();
-  assert.equal(vm.runInContext("t('localBadge')",h.context),'No file upload');
+  assert.equal(vm.runInContext("t('localBadge')",h.context),'Fully local processing');
   assert.match(source,/connect-src 'none'/);
 });
 test('static header fallback matches the configured patch and localized target action',()=>{
