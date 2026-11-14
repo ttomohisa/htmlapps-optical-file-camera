@@ -54,16 +54,14 @@ test('Help and confirmation retain native opening, dismissal and confirmation fo
   assert.match(confirm, /restoreFocus\.focus\(\{ preventScroll: true \}\)/);
 });
 
-test('Help explains dismissal without scroll audit prose', () => {
+test('Help omits redundant dialog dismissal instructions in both languages', () => {
   const translations = vm.runInNewContext(section('      const translations =', '      const $ =') + '\ntranslations;');
   const help = section('<!-- APP:HELP:BEGIN -->', '<!-- APP:HELP:END -->');
-  const fallback = help.match(/<p data-i18n="helpDialogs">([^<]+)<\/p>/);
-  assert(fallback, 'The new Help guidance must appear in the real Help body');
-  assert.equal(fallback[1], translations.ja.helpDialogs);
-  assert.doesNotMatch(translations.ja.helpDialogs, /背景.*スクロール/);
-  assert.match(translations.ja.helpDialogs, /閉じる.*Esc.*背景/);
-  assert.doesNotMatch(translations.en.helpDialogs, /background page.*scroll/i);
-  assert.match(translations.en.helpDialogs, /Close.*Esc.*backdrop/);
+  assert.doesNotMatch(help, /data-i18n="helpDialogs"/);
+  assert.equal(Object.hasOwn(translations.ja, 'helpDialogs'), false);
+  assert.equal(Object.hasOwn(translations.en, 'helpDialogs'), false);
+  assert.doesNotMatch(help, /閉じるボタン、Escキー、または背景のクリックで閉じられます。/);
+  assert.doesNotMatch(html, /Use Close, Esc, or click the backdrop to dismiss the dialog\./);
 });
 
 test('local-processing badge retains its existing shield and no-upload copy', () => {
